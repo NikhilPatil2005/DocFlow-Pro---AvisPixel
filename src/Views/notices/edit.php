@@ -10,7 +10,8 @@
                 <?php echo htmlspecialchars($notice['rejection_reason']); ?>
             </p>
         </div>
-    <?php endif; ?>
+    <?php
+endif; ?>
 
     <form action="index.php?action=edit_notice&id=<?php echo $notice['id']; ?>" method="POST" class="space-y-6">
         <div>
@@ -18,6 +19,15 @@
             <input type="text" name="title" id="title" required
                 value="<?php echo htmlspecialchars($notice['title']); ?>"
                 class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary sm:text-sm">
+        </div>
+
+        <div>
+            <label for="priority" class="block text-sm font-medium text-gray-700">Priority</label>
+            <select name="priority" id="priority" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary sm:text-sm">
+                <option value="Low" <?php echo($notice['priority'] ?? 'Low') === 'Low' ? 'selected' : ''; ?>>Low</option>
+                <option value="Medium" <?php echo($notice['priority'] ?? 'Low') === 'Medium' ? 'selected' : ''; ?>>Medium</option>
+                <option value="High" <?php echo($notice['priority'] ?? 'Low') === 'High' ? 'selected' : ''; ?>>High</option>
+            </select>
         </div>
 
         <div>

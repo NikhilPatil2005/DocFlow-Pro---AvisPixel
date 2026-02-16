@@ -1,8 +1,8 @@
 <?php
 // Database Configuration
 define('DB_HOST', 'localhost');
-define('DB_USER', 'root');
-define('DB_PASS', 'root');
+define('DB_USER', 'test');
+define('DB_PASS', 'NikPatil@2005');
 define('DB_NAME', 'notice_system');
 
 // Create Connection

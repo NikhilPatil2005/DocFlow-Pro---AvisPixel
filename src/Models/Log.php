@@ -11,8 +11,8 @@ class Log
 
     public function create($noticeId, $performedBy, $role, $action, $oldStatus = null, $newStatus = null, $details = null)
     {
-        $noticeId = (int) $noticeId;
-        $performedBy = (int) $performedBy;
+        $noticeId = (int)$noticeId;
+        $performedBy = (int)$performedBy;
         $role = sanitize($role);
         $action = sanitize($action);
         $oldStatus = $oldStatus ? "'" . sanitize($oldStatus) . "'" : "NULL";
@@ -23,5 +23,17 @@ class Log
                 VALUES ($noticeId, $performedBy, '$role', '$action', $oldStatus, $newStatus, $details)";
 
         return $this->conn->query($sql);
+    }
+
+    public function getLogsByNoticeId($noticeId)
+    {
+        $noticeId = (int)$noticeId;
+        $sql = "SELECT l.*, u.username as performed_by_name 
+                FROM notice_logs l 
+                JOIN users u ON l.performed_by = u.id 
+                WHERE l.notice_id = $noticeId 
+                ORDER BY l.created_at ASC";
+        $result = $this->conn->query($sql);
+        return $result->fetch_all(MYSQLI_ASSOC);
     }
 }

@@ -28,16 +28,16 @@
             <div class="flex justify-between h-16">
                 <div class="flex">
                     <div class="flex-shrink-0 flex items-center">
-                        <span class="font-bold text-xl text-primary">NoticeSys</span>
+                        <span class="font-bold text-xl text-primary">DOCFLOW-PRO</span>
                     </div>
                 </div>
                 <div class="flex items-center space-x-4">
                     <?php
-                    if (isset($_SESSION['user_id'])) {
-                        require_once __DIR__ . '/../../Models/Notification.php';
-                        $notifModel = new Notification($conn);
-                        $unreadCount = count($notifModel->getUnread($_SESSION['user_id']));
-                        ?>
+if (isset($_SESSION['user_id'])) {
+    require_once __DIR__ . '/../../Models/Notification.php';
+    $notifModel = new Notification($conn);
+    $unreadCount = count($notifModel->getUnread($_SESSION['user_id']));
+?>
                         <a href="index.php?action=notifications" class="text-gray-500 hover:text-gray-700 relative">
                             <!-- Bell Icon -->
                             <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -47,7 +47,8 @@
                             <?php if ($unreadCount > 0): ?>
                                 <span
                                     class="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 transform translate-x-1/2 -translate-y-1/2 bg-red-600 rounded-full"><?php echo $unreadCount; ?></span>
-                            <?php endif; ?>
+                            <?php
+    endif; ?>
                         </a>
 
                         <span class="text-gray-700">Welcome,
@@ -55,7 +56,8 @@
                             (<?php echo ucfirst(str_replace('_', ' ', $_SESSION['role'] ?? '')); ?>)</span>
                         <a href="index.php?action=logout"
                             class="text-gray-500 hover:text-gray-700 px-3 py-2 rounded-md text-sm font-medium">Logout</a>
-                    <?php } ?>
+                    <?php
+}?>
                 </div>
             </div>
         </div>
@@ -87,7 +89,8 @@
                                 Create Notice
                             </a>
                         </li>
-                    <?php endif; ?>
+                    <?php
+endif; ?>
                     <li>
                         <a href="index.php?action=notifications"
                             class="flex items-center text-gray-700 hover:text-primary transition">

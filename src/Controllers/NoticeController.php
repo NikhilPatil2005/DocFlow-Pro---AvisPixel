@@ -59,16 +59,19 @@ class NoticeController
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $title = $_POST['title'];
             $content = $_POST['content'];
+            $priority = $_POST['priority'] ?? 'Low';
             $createdBy = currentUser();
 
-            $noticeId = $this->noticeModel->create($title, $content, $createdBy);
+            $noticeId = $this->noticeModel->create($title, $content, $createdBy, $priority);
             if ($noticeId) {
                 $this->logAndNotify($noticeId, 'notice_created', null, 'pending_admin');
                 redirect('index.php?action=super_admin_dashboard');
-            } else {
+            }
+            else {
                 view('notices/create', ['error' => 'Failed to create notice.']);
             }
-        } else {
+        }
+        else {
             view('notices/create');
         }
     }
@@ -103,10 +106,12 @@ class NoticeController
         if ($role === 'admin') {
             $oldStatus = 'pending_admin';
             $targetStatus = 'admin_rejected';
-        } elseif ($role === 'teacher') {
+        }
+        elseif ($role === 'teacher') {
             $oldStatus = 'admin_approved';
             $targetStatus = 'teacher_rejected';
-        } else {
+        }
+        else {
             die("Unauthorized");
         }
 
@@ -147,13 +152,15 @@ class NoticeController
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $title = $_POST['title'];
             $content = $_POST['content'];
+            $priority = $_POST['priority'] ?? 'Low';
 
-            if ($this->noticeModel->update($id, $title, $content)) {
+            if ($this->noticeModel->update($id, $title, $content, $priority)) {
                 $this->noticeModel->updateStatus($id, 'pending_admin');
                 $this->logAndNotify($id, 'notice_resubmitted', 'admin_rejected', 'pending_admin');
                 redirect('index.php?action=super_admin_dashboard');
             }
-        } else {
+        }
+        else {
             view('notices/edit', ['notice' => $notice]);
         }
     }
@@ -203,6 +210,9 @@ class NoticeController
             $conn->query("INSERT IGNORE INTO read_receipts (notice_id, student_id) VALUES ($id, $studentId)");
         }
 
-        view('notices/view', ['notice' => $notice]);
+        // Fetch logs
+        $logs = $this->logModel->getLogsByNoticeId($id);
+
+        view('notices/view', ['notice' => $notice, 'logs' => $logs]);
     }
 }

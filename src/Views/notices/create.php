@@ -9,13 +9,23 @@
                 <?php echo $error; ?>
             </p>
         </div>
-    <?php endif; ?>
+    <?php
+endif; ?>
 
     <form action="index.php?action=create_notice" method="POST" class="space-y-6">
         <div>
             <label for="title" class="block text-sm font-medium text-gray-700">Title</label>
             <input type="text" name="title" id="title" required
                 class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary sm:text-sm">
+        </div>
+
+        <div>
+            <label for="priority" class="block text-sm font-medium text-gray-700">Priority</label>
+            <select name="priority" id="priority" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary sm:text-sm">
+                <option value="Low">Low</option>
+                <option value="Medium">Medium</option>
+                <option value="High">High</option>
+            </select>
         </div>
 
         <div>
