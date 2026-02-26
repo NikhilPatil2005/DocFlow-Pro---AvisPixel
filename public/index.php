@@ -6,12 +6,16 @@ require_once __DIR__ . '/../src/functions.php';
 require_once __DIR__ . '/../src/Controllers/AuthController.php';
 require_once __DIR__ . '/../src/Controllers/DashboardController.php';
 require_once __DIR__ . '/../src/Controllers/NoticeController.php';
+require_once __DIR__ . '/../src/Controllers/ApprovalController.php';
+require_once __DIR__ . '/../src/Controllers/UserController.php';
 
 $action = $_GET['action'] ?? 'login';
 
 $authController = new AuthController($conn);
 $dashboardController = new DashboardController();
 $noticeController = new NoticeController($conn);
+$approvalController = new ApprovalController($conn);
+$userController = new UserController($conn);
 
 switch ($action) {
     case 'login':
@@ -37,6 +41,12 @@ switch ($action) {
     case 'logout':
         $authController->logout();
         break;
+    case 'register':
+        $authController->register();
+        break;
+    case 'check_status':
+        $authController->checkStatus();
+        break;
 
     // Notices
     case 'create_notice':
@@ -61,6 +71,14 @@ switch ($action) {
         $noticeController->view();
         break;
 
+    // User Approvals
+    case 'approve_user':
+        $approvalController->approve();
+        break;
+    case 'reject_user':
+        $approvalController->reject();
+        break;
+
     // Notifications
     case 'notifications':
         requireLogin();
@@ -72,6 +90,14 @@ switch ($action) {
         $notifModel = new Notification($conn);
         $notifModel->markAsRead(currentUser());
         redirect('index.php?action=notifications');
+        break;
+
+    // Dedicated Pages
+    case 'registration_requests':
+        $dashboardController->registrationRequests();
+        break;
+    case 'notice_approvals':
+        $dashboardController->noticeApprovals();
         break;
 
     // Dashboards
@@ -86,6 +112,23 @@ switch ($action) {
         break;
     case 'student_dashboard':
         $dashboardController->student();
+        break;
+
+    // User Management
+    case 'manage_users':
+        $userController->index();
+        break;
+    case 'view_user':
+        $userController->viewUser();
+        break;
+    case 'update_user_status':
+        $userController->updateUserStatus();
+        break;
+    case 'update_user_role':
+        $userController->updateUserRole();
+        break;
+    case 'delete_user':
+        $userController->deleteUser();
         break;
 
     default:

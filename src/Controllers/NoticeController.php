@@ -85,7 +85,7 @@ class NoticeController
         if ($id) {
             $this->noticeModel->updateStatus($id, 'admin_approved');
             $this->logAndNotify($id, 'admin_approved', 'pending_admin', 'admin_approved');
-            redirect('index.php?action=admin_dashboard');
+            redirect('index.php?action=notice_approvals&success=Notice approved successfully');
         }
     }
 
@@ -117,7 +117,7 @@ class NoticeController
 
         if ($this->noticeModel->updateStatus($id, $targetStatus, $reason)) {
             $this->logAndNotify($id, "{$role}_rejected", $oldStatus, $targetStatus, $reason);
-            redirect("index.php?action={$role}_dashboard");
+            redirect("index.php?action=notice_approvals&success=Notice rejected successfully");
         }
     }
 
@@ -129,7 +129,7 @@ class NoticeController
         $id = $_GET['id'] ?? null;
         if ($id && $this->noticeModel->updateStatus($id, 'teacher_published')) {
             $this->logAndNotify($id, 'teacher_published', 'admin_approved', 'teacher_published');
-            redirect('index.php?action=teacher_dashboard');
+            redirect('index.php?action=notice_approvals&success=Notice published successfully');
         }
     }
 

@@ -36,7 +36,8 @@
                     <?php echo $error; ?>
                 </p>
             </div>
-        <?php endif; ?>
+        <?php
+endif; ?>
 
         <form action="index.php?action=login" method="POST" class="space-y-6">
 
@@ -78,18 +79,28 @@
                 <input type="password" name="password" id="password" required
                     class="mt-1 block w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary sm:text-sm transition duration-150 ease-in-out"
                     placeholder="Enter your password">
+                <div class="text-sm">
+                    <a href="index.php?action=check_status" class="font-medium text-indigo-600 hover:text-indigo-500">
+                        Check Registration Status
+                    </a>
+                </div>
             </div>
 
             <div>
-                <button type="submit"
-                    class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-primary hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition duration-150 ease-in-out">
-                    Sign In
+                <button type="submit" class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    <span class="absolute left-0 inset-y-0 flex items-center pl-3">
+                        <!-- Heroicon name: solid/lock-closed -->
+                        <svg class="h-5 w-5 text-indigo-500 group-hover:text-indigo-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                            <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
+                        </svg>
+                    </span>
+                    Sign in
                 </button>
             </div>
         </form>
 
         <div class="mt-6 text-center text-sm text-gray-500">
-            <p>Don't have an account? Contact your administrator.</p>
+            <p>Don't have an account? <a href="index.php?action=register" class="font-medium text-primary hover:text-indigo-500">Register here</a>.</p>
         </div>
     </div>
 

@@ -3,6 +3,63 @@
 class DashboardController
 {
 
+    public function registrationRequests()
+    {
+        requireLogin();
+        $role = $_SESSION['role'];
+        requireRole(['super_admin', 'admin', 'teacher']); // Teacher might need access if they approve students?
+
+        require_once __DIR__ . '/../Models/User.php';
+        global $conn;
+        $userModel = new User($conn);
+
+        $pendingUsers = [];
+        if ($role === 'super_admin') {
+            // Super Admin sees 'pending_super_admin' (Everyone at final stage)
+            // This includes: Admin registrations, Teacher registrations (step 2), Student registrations (step 3)
+            $pendingUsers = $userModel->getPendingUsers(null, 'pending_super_admin');
+        }
+        elseif ($role === 'admin') {
+            // Admin sees 'pending_admin'
+            // This includes: Teacher registrations (step 1), Student registrations (step 2)
+            $pendingUsers = $userModel->getPendingUsers(null, 'pending_admin');
+        }
+        elseif ($role === 'teacher') {
+            // Teacher sees 'pending_teacher'
+            // This includes: Student registrations (step 1)
+            $pendingUsers = $userModel->getPendingUsers(null, 'pending_teacher');
+        }
+
+        // Fetch documents for all
+        foreach ($pendingUsers as &$u) {
+            $u['documents'] = $userModel->getDocuments($u['id']);
+        }
+        unset($u);
+
+        view('dashboard/registration_requests', ['pendingUsers' => $pendingUsers]);
+    }
+
+    public function noticeApprovals()
+    {
+        requireLogin();
+        $role = $_SESSION['role'];
+        requireRole(['admin', 'teacher']);
+
+        require_once __DIR__ . '/../Models/Notice.php';
+        global $conn;
+        $noticeModel = new Notice($conn);
+
+        $notices = [];
+        if ($role === 'admin') {
+            $notices = $noticeModel->getAllByStatus('pending_admin');
+        }
+        elseif ($role === 'teacher') {
+            $notices = $noticeModel->getAllByStatus('admin_approved');
+        }
+
+        view('dashboard/notice_approvals', ['notices' => $notices]);
+    }
+
     public function superAdmin()
     {
         requireLogin();
@@ -11,46 +68,9 @@ class DashboardController
         require_once __DIR__ . '/../Models/Notice.php';
         global $conn;
         $noticeModel = new Notice($conn);
-
         $counts = $noticeModel->getCountsByStatus();
 
-        $filterStatus = $_GET['status'] ?? null;
-        if ($filterStatus == 'pending')
-            $filterStatus = 'pending_admin';
-        if ($filterStatus == 'published')
-            $filterStatus = 'teacher_published'; // or any published? Let's use strict for now or 'teacher_published'
-
-        // If generic 'published' is requested, maybe we want all things visible to students?
-        // But for counts we did LIKE '%published%'.
-        // Let's stick to what NoticeModel supports.
-
-        $notices = [];
-        if ($filterStatus) {
-            // Mapping for simpler URL params to DB status
-            if ($filterStatus == 'rejected') {
-                // rejected matches admin_rejected OR teacher_rejected
-                // But getAllByStatus takes exact match?
-                // Let's rely on dashboard view to filter or add a better method in model.
-                // Actually, let's keep it simple: If filtered, we might need a custom query or strict match.
-                // Let's just use getAllForSuperAdmin and filter in PHP for now to match the existing logic if we don't want to overcomplicate Model.
-                // OR, improved `getAllByStatus`?
-                // Let's use `getAllForSuperAdmin` as base, and filter.
-                $allNotices = $noticeModel->getAllForSuperAdmin();
-                foreach ($allNotices as $n) {
-                    if (strpos($n['status'], $_GET['status']) !== false) {
-                        $notices[] = $n;
-                    }
-                }
-            }
-            else {
-                $notices = $noticeModel->getAllByStatus($filterStatus);
-            }
-        }
-        else {
-            $notices = $noticeModel->getAllForSuperAdmin();
-        }
-
-        view('dashboard/super_admin', ['counts' => $counts, 'notices' => $notices]);
+        view('dashboard/super_admin', ['counts' => $counts]);
     }
 
     public function admin()

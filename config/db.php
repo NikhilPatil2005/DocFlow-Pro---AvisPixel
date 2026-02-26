@@ -4,6 +4,7 @@ define('DB_HOST', 'localhost');
 define('DB_USER', 'test');
 define('DB_PASS', 'NikPatil@2005');
 define('DB_NAME', 'notice_system');
+define('BASE_URL', 'http://localhost/DocFlow-Pro---AvisPixel/');
 
 // Create Connection
 $conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
