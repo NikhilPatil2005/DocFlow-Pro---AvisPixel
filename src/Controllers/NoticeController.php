@@ -54,7 +54,7 @@ class NoticeController
     public function create()
     {
         requireLogin();
-        requireRole(['super_admin']);
+        requireRole(['admin']);
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $title = $_POST['title'];
@@ -64,14 +64,12 @@ class NoticeController
 
             $noticeId = $this->noticeModel->create($title, $content, $createdBy, $priority);
             if ($noticeId) {
-                $this->logAndNotify($noticeId, 'notice_created', null, 'pending_admin');
-                redirect('index.php?action=super_admin_dashboard');
-            }
-            else {
+                $this->logAndNotify($noticeId, 'notice_created', null, 'pending_principal');
+                redirect('index.php?action=admin_dashboard');
+            } else {
                 view('notices/create', ['error' => 'Failed to create notice.']);
             }
-        }
-        else {
+        } else {
             view('notices/create');
         }
     }
@@ -106,12 +104,10 @@ class NoticeController
         if ($role === 'admin') {
             $oldStatus = 'pending_admin';
             $targetStatus = 'admin_rejected';
-        }
-        elseif ($role === 'teacher') {
+        } elseif ($role === 'teacher') {
             $oldStatus = 'admin_approved';
             $targetStatus = 'teacher_rejected';
-        }
-        else {
+        } else {
             die("Unauthorized");
         }
 
@@ -136,11 +132,11 @@ class NoticeController
     public function edit()
     {
         requireLogin();
-        requireRole(['super_admin']);
+        requireRole(['admin']);
 
         $id = $_GET['id'] ?? null;
         if (!$id)
-            redirect('index.php?action=super_admin_dashboard');
+            redirect('index.php?action=admin_dashboard');
 
         $notice = $this->noticeModel->getById($id);
 
@@ -155,12 +151,11 @@ class NoticeController
             $priority = $_POST['priority'] ?? 'Low';
 
             if ($this->noticeModel->update($id, $title, $content, $priority)) {
-                $this->noticeModel->updateStatus($id, 'pending_admin');
-                $this->logAndNotify($id, 'notice_resubmitted', 'admin_rejected', 'pending_admin');
-                redirect('index.php?action=super_admin_dashboard');
+                $this->noticeModel->updateStatus($id, 'pending_principal');
+                $this->logAndNotify($id, 'notice_resubmitted', 'admin_rejected', 'pending_principal');
+                redirect('index.php?action=admin_dashboard');
             }
-        }
-        else {
+        } else {
             view('notices/edit', ['notice' => $notice]);
         }
     }
@@ -184,7 +179,7 @@ class NoticeController
         // Access Control for View
         $role = currentRole();
         $canView = false;
-        if ($role === 'super_admin')
+        if ($role === 'admin')
             $canView = true;
         if ($role === 'admin' && in_array($notice['status'], ['pending_admin', 'admin_approved', 'teacher_published', 'teacher_rejected', 'admin_rejected']))
             $canView = true;

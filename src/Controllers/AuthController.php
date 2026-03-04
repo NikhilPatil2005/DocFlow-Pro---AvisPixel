@@ -33,11 +33,14 @@ class AuthController
 
                 // Redirect based on role
                 switch ($_SESSION['role']) {
-                    case 'super_admin':
-                        redirect('index.php?action=super_admin_dashboard');
-                        break;
                     case 'admin':
                         redirect('index.php?action=admin_dashboard');
+                        break;
+                    case 'principal':
+                        redirect('index.php?action=principal_dashboard');
+                        break;
+                    case 'hod':
+                        redirect('index.php?action=hod_dashboard');
                         break;
                     case 'teacher':
                         redirect('index.php?action=teacher_dashboard');
@@ -48,8 +51,7 @@ class AuthController
                     default:
                         redirect('index.php?action=login');
                 }
-            }
-            elseif ($loginResult === 'not_active') {
+            } elseif ($loginResult === 'not_active') {
                 // Fetch user status to give specific message
                 $user = $this->userModel->getUserByUsername($username);
                 $status = $user['status'];
@@ -57,21 +59,21 @@ class AuthController
 
                 if ($status === 'pending_teacher')
                     $statusMsg = "Your registration is waiting for Teacher approval.";
+                elseif ($status === 'pending_hod')
+                    $statusMsg = "Your registration is waiting for HOD approval.";
+                elseif ($status === 'pending_principal')
+                    $statusMsg = "Your registration is waiting for Principal approval.";
                 elseif ($status === 'pending_admin')
                     $statusMsg = "Your registration is waiting for Admin approval.";
-                elseif ($status === 'pending_super_admin')
-                    $statusMsg = "Your registration is waiting for Super Admin approval.";
                 elseif ($status === 'rejected')
                     $statusMsg = "Your registration was rejected.";
 
                 view('auth/login', ['error' => $statusMsg]);
-            }
-            else {
+            } else {
                 $error = "Invalid username or password";
                 view('auth/login', ['error' => $error]);
             }
-        }
-        else {
+        } else {
             view('auth/login');
         }
     }
@@ -99,12 +101,15 @@ class AuthController
                     $status = 'pending_teacher';
                     break;
                 case 'teacher':
+                    $status = 'pending_hod';
+                    break;
+                case 'hod':
+                    $status = 'pending_principal';
+                    break;
+                case 'principal':
                     $status = 'pending_admin';
                     break;
                 case 'admin':
-                    $status = 'pending_super_admin';
-                    break;
-                case 'super_admin':
                     $masterKey = $_POST['master_key'] ?? '';
                     if ($masterKey !== 'MASTER_KEY_123') {
                         view('auth/register', ['error' => 'Invalid Master Security Key.']);
@@ -114,8 +119,15 @@ class AuthController
                     break;
             }
 
+            // Extract department_id if present
+            $department_id = $_POST['department_id'] ?? null;
+            if (empty($department_id)) {
+                // If it's explicitly '0' or empty string, set it to null
+                $department_id = null;
+            }
+
             $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-            $userId = $this->userModel->register($username, $email, $hashedPassword, $role, $status);
+            $userId = $this->userModel->register($username, $email, $hashedPassword, $role, $status, $department_id);
 
             if ($userId) {
                 // Handle File Uploads
@@ -131,15 +143,13 @@ class AuthController
                 }
 
                 $documents = [];
-                if ($role === 'admin') {
+                if (in_array($role, ['admin', 'principal'])) {
                     $documents['identity_proof'] = 'identity_proof';
                     $documents['appointment_letter'] = 'appointment_letter';
-                }
-                elseif ($role === 'teacher') {
+                } elseif (in_array($role, ['teacher', 'hod'])) {
                     $documents['educational_certificates'] = 'educational_certificates';
                     $documents['college_id_card'] = 'college_id_card';
-                }
-                elseif ($role === 'student') {
+                } elseif ($role === 'student') {
                     $documents['admission_receipt'] = 'admission_receipt';
                     $documents['previous_marksheet'] = 'previous_marksheet';
                 }
@@ -168,19 +178,28 @@ class AuthController
                     // Auto login if active (Super Admin)
                     // Or redirect to login
                     redirect('index.php?action=login&message=registered_active');
-                }
-                else {
+                } else {
                     redirect('index.php?action=login&message=registered_pending');
                 }
 
-            }
-            else {
-                view('auth/register', ['error' => 'Registration failed. Username may already be taken.']);
+            } else {
+                global $conn;
+                $departments = [];
+                $res = $conn->query("SELECT id, name FROM departments ORDER BY name");
+                if ($res) {
+                    $departments = $res->fetch_all(MYSQLI_ASSOC);
+                }
+                view('auth/register', ['error' => 'Registration failed. Username may already be taken.', 'departments' => $departments]);
             }
 
-        }
-        else {
-            view('auth/register');
+        } else {
+            global $conn;
+            $departments = [];
+            $res = $conn->query("SELECT id, name FROM departments ORDER BY name");
+            if ($res) {
+                $departments = $res->fetch_all(MYSQLI_ASSOC);
+            }
+            view('auth/register', ['departments' => $departments]);
         }
     }
 
@@ -230,12 +249,10 @@ class AuthController
                     'role' => $user['role'],
                     'userStatus' => $user['status']
                 ]);
-            }
-            else {
+            } else {
                 view('auth/check_status', ['error' => 'User not found.']);
             }
-        }
-        else {
+        } else {
             view('auth/check_status');
         }
     }

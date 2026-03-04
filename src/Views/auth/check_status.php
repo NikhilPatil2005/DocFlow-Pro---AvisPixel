@@ -15,99 +15,110 @@
             <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
                 <span class="block sm:inline"><?php echo htmlspecialchars($error); ?></span>
             </div>
-        <?php
-endif; ?>
+            <?php
+        endif; ?>
 
         <?php if (isset($userStatus)): ?>
             <div class="mt-4">
-                <h3 class="text-lg font-medium text-gray-900">Application Status for: <span class="text-indigo-600"><?php echo htmlspecialchars($username); ?></span></h3>
+                <h3 class="text-lg font-medium text-gray-900">Application Status for: <span
+                        class="text-indigo-600"><?php echo htmlspecialchars($username); ?></span></h3>
                 <p class="text-sm text-gray-500 mb-4">Role: <?php echo ucfirst($role); ?></p>
 
                 <div class="relative pt-1">
                     <div class="flex mb-2 items-center justify-between">
                         <div>
-                    <span class="text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full text-indigo-600 bg-indigo-200">
-                      Progress
-                    </span>
+                            <span
+                                class="text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full text-indigo-600 bg-indigo-200">
+                                Progress
+                            </span>
                         </div>
                         <div class="text-right">
-                    <span class="text-xs font-semibold inline-block text-indigo-600">
-                        <?php
-    $percentage = 0;
-    if ($userStatus === 'active')
-        $percentage = 100;
-    elseif ($userStatus === 'pending_super_admin')
-        $percentage = 75;
-    elseif ($userStatus === 'pending_admin')
-        $percentage = 50;
-    elseif ($userStatus === 'pending_teacher')
-        $percentage = 25;
-    elseif ($userStatus === 'rejected')
-        $percentage = 0; // Or handling differently
-    echo $percentage . '%';
-?>
-                    </span>
+                            <span class="text-xs font-semibold inline-block text-indigo-600">
+                                <?php
+                                $percentage = 0;
+                                if ($userStatus === 'active')
+                                    $percentage = 100;
+                                elseif ($userStatus === 'pending_admin') {
+                                    $statusMessage = 'Awaiting Admin Approval';
+                                    $statusColor = 'text-indigo-600 bg-indigo-50 border-indigo-200';
+                                    $icon = '<svg class="w-12 h-12 text-indigo-500 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>';
+                                    $percentage = 75; // 3/4 steps done
+                                } elseif ($userStatus === 'pending_admin')
+                                    $percentage = 50;
+                                elseif ($userStatus === 'pending_teacher')
+                                    $percentage = 25;
+                                elseif ($userStatus === 'rejected')
+                                    $percentage = 0; // Or handling differently
+                                echo $percentage . '%';
+                                ?>
+                            </span>
                         </div>
                     </div>
                     <div class="overflow-hidden h-2 mb-4 text-xs flex rounded bg-indigo-200">
-                        <div style="width:<?php echo $percentage; ?>%" class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-indigo-500"></div>
+                        <div style="width:<?php echo $percentage; ?>%"
+                            class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-indigo-500">
+                        </div>
                     </div>
-                    
+
                     <!-- Timeline Steps -->
                     <div class="flex justify-between text-xs text-center">
                         <?php if ($role === 'student'): ?>
-                            <div class="<?php echo($userStatus == 'pending_teacher' || $percentage >= 25) ? 'text-indigo-600 font-bold' : 'text-gray-400'; ?>">Teacher Review</div>
-                            <div class="<?php echo($userStatus == 'pending_admin' || $percentage >= 50) ? 'text-indigo-600 font-bold' : 'text-gray-400'; ?>">Admin Review</div>
-                            <div class="<?php echo($userStatus == 'pending_super_admin' || $percentage >= 75) ? 'text-indigo-600 font-bold' : 'text-gray-400'; ?>">Super Admin</div>
-                        <?php
-    elseif ($role === 'teacher'): ?>
-                             <div class="<?php echo($userStatus == 'pending_teacher' || $percentage >= 25) ? 'text-gray-400 hidden' : 'text-gray-400 hidden'; ?>">NA</div>
-                            <div class="<?php echo($userStatus == 'pending_admin' || $percentage >= 50) ? 'text-indigo-600 font-bold' : 'text-gray-400'; ?>">Admin Review</div>
-                            <div class="<?php echo($userStatus == 'pending_super_admin' || $percentage >= 75) ? 'text-indigo-600 font-bold' : 'text-gray-400'; ?>">Super Admin</div>
-                        <?php
-    endif; ?>
-                            <div class="<?php echo($userStatus == 'active') ? 'text-green-600 font-bold' : 'text-gray-400'; ?>">Active</div>
+                            <div class="<?php echo ($userStatus == 'pending_teacher' || $percentage >= 25) ? 'text-indigo-600 font-bold' : 'text-gray-400'; ?>">
+                                Teacher Review</div>
+                            <div class="<?php echo ($userStatus == 'pending_admin' || $percentage >= 50) ? 'text-indigo-600 font-bold' : 'text-gray-400'; ?>">
+                                Admin Review</div>
+                        <?php elseif ($role === 'teacher'): ?>
+                            <div class="<?php echo ($userStatus == 'pending_teacher' || $percentage >= 25) ? 'text-gray-400 hidden' : 'text-gray-400 hidden'; ?>">
+                                NA</div>
+                            <div class="<?php echo ($userStatus == 'pending_admin' || $percentage >= 50) ? 'text-indigo-600 font-bold' : 'text-gray-400'; ?>">
+                                Admin Review</div>
+                        <?php endif; ?>
+                        <div class="<?php echo ($userStatus == 'active') ? 'text-green-600 font-bold' : 'text-gray-400'; ?>">
+                            Active</div>
                     </div>
-                    
-                     <?php if ($userStatus === 'rejected'): ?>
+
+                    <?php if ($userStatus === 'rejected'): ?>
                         <div class="mt-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
                             <strong>Status: Rejected</strong>
                             <p>Please contact support for more details.</p>
                         </div>
-                    <?php
-    endif; ?>
+                        <?php
+                    endif; ?>
                 </div>
             </div>
-            
-             <div class="mt-6 text-center">
-                 <a href="index.php?action=login" class="font-medium text-indigo-600 hover:text-indigo-500">Back to Login</a>
+
+            <div class="mt-6 text-center">
+                <a href="index.php?action=login" class="font-medium text-indigo-600 hover:text-indigo-500">Back to Login</a>
             </div>
 
-        <?php
-else: ?>
+            <?php
+        else: ?>
             <form class="mt-8 space-y-6" action="index.php?action=check_status" method="POST">
                 <input type="hidden" name="check_status" value="1">
                 <div class="rounded-md shadow-sm -space-y-px">
                     <div>
                         <label for="username" class="sr-only">Username</label>
-                        <input id="username" name="username" type="text" required class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" placeholder="Username">
+                        <input id="username" name="username" type="text" required
+                            class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                            placeholder="Username">
                     </div>
                 </div>
 
                 <div>
-                    <button type="submit" class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    <button type="submit"
+                        class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                         Check Status
                     </button>
                 </div>
-                
-                 <div class="text-sm text-center">
+
+                <div class="text-sm text-center">
                     <a href="index.php?action=login" class="font-medium text-indigo-600 hover:text-indigo-500">
                         Back to Login
                     </a>
                 </div>
             </form>
-        <?php
-endif; ?>
+            <?php
+        endif; ?>
     </div>
 </div>
 

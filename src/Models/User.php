@@ -34,7 +34,7 @@ class User
 
     public function getUserById($id)
     {
-        $id = (int)$id;
+        $id = (int) $id;
         $sql = "SELECT * FROM users WHERE id = $id";
         $result = $this->conn->query($sql);
         return $result->fetch_assoc();
@@ -55,10 +55,11 @@ class User
         return $result->fetch_assoc();
     }
 
-    public function register($username, $email, $password, $role, $status)
+    public function register($username, $email, $password, $role, $status, $department_id = null)
     {
         $username = sanitize($username);
         $email = sanitize($email);
+        $department_id = $department_id ? (int) $department_id : "NULL";
         // Password should already be hashed
 
         // Check if email already exists
@@ -66,7 +67,7 @@ class User
             return false; // Email taken
         }
 
-        $sql = "INSERT INTO users (username, email, password, role, status) VALUES ('$username', '$email', '$password', '$role', '$status')";
+        $sql = "INSERT INTO users (username, email, password, role, status, department_id) VALUES ('$username', '$email', '$password', '$role', '$status', $department_id)";
         if ($this->conn->query($sql)) {
             return $this->conn->insert_id;
         }
@@ -83,34 +84,40 @@ class User
     // I'll use multi_replace instead? Or replace the register method first, then add others.
     // Let's replace register first.
 
-    public function getAllUsers($search = '', $role = '', $status = '', $viewerRole = 'super_admin')
+    public function getAllUsers($search = '', $role = '', $status = '', $viewerRole = 'admin')
     {
         $sql = "SELECT * FROM users WHERE 1=1";
 
         // Role-based visibility
         if ($viewerRole === 'admin') {
-            // Admin sees Teachers and Students
-            // But if specific role is requested, validation is needed?
-            // Let's just filter the base query.
-            if ($role) {
-                // If asking for 'admin' or 'super_admin' as an admin, return nothing or handle it.
-                if (in_array($role, ['super_admin', 'admin'])) {
-                    return [];
-                }
+            // Admin sees everyone except other admins (or all)
+            if ($role && $role === 'admin') {
+                return [];
             }
-            else {
+        } elseif ($viewerRole === 'principal') {
+            // Principal sees HODs, Teachers, and Students
+            if ($role && in_array($role, ['admin', 'principal'])) {
+                return [];
+            }
+            if (!$role) {
+                $sql .= " AND role IN ('hod', 'teacher', 'student')";
+            }
+        } elseif ($viewerRole === 'hod') {
+            // HOD sees Teachers and Students
+            // Normally restricted to department, but for general view:
+            if ($role && !in_array($role, ['teacher', 'student'])) {
+                return [];
+            }
+            if (!$role) {
                 $sql .= " AND role IN ('teacher', 'student')";
             }
-        }
-        elseif ($viewerRole === 'teacher') {
+        } elseif ($viewerRole === 'teacher') {
             // Teacher sees Students only
             if ($role && $role !== 'student') {
                 return [];
             }
             $sql .= " AND role = 'student'";
-        }
-        elseif ($viewerRole !== 'super_admin') {
-            // Unknown role sees nothing? Or just self?
+        } elseif ($viewerRole !== 'admin') {
             return [];
         }
 
@@ -137,22 +144,30 @@ class User
 
     public function updateUserRole($userId, $role)
     {
-        $userId = (int)$userId;
+        $userId = (int) $userId;
         $role = sanitize($role);
         $sql = "UPDATE users SET role = '$role' WHERE id = $userId";
         return $this->conn->query($sql);
     }
 
+    public function updateUserDepartment($userId, $departmentId)
+    {
+        $userId = (int) $userId;
+        $departmentId = $departmentId ? (int) $departmentId : "NULL";
+        $sql = "UPDATE users SET department_id = $departmentId WHERE id = $userId";
+        return $this->conn->query($sql);
+    }
+
     public function deleteUser($userId)
     {
-        $userId = (int)$userId;
+        $userId = (int) $userId;
         $sql = "DELETE FROM users WHERE id = $userId";
         return $this->conn->query($sql);
     }
 
     public function addDocument($userId, $type, $path)
     {
-        $userId = (int)$userId;
+        $userId = (int) $userId;
         $type = sanitize($type);
         $path = sanitize($path);
 
@@ -174,7 +189,7 @@ class User
 
     public function updateStatus($userId, $status)
     {
-        $userId = (int)$userId;
+        $userId = (int) $userId;
         $status = sanitize($status);
         $sql = "UPDATE users SET status = '$status' WHERE id = $userId";
         return $this->conn->query($sql);
@@ -182,8 +197,8 @@ class User
 
     public function logApproval($userId, $approvedBy, $statusAssigned, $remarks = '')
     {
-        $userId = (int)$userId;
-        $approvedBy = (int)$approvedBy;
+        $userId = (int) $userId;
+        $approvedBy = (int) $approvedBy;
         $statusAssigned = sanitize($statusAssigned);
         $remarks = sanitize($remarks);
 
@@ -212,7 +227,7 @@ class User
 
     public function getDocuments($userId)
     {
-        $userId = (int)$userId;
+        $userId = (int) $userId;
         $sql = "SELECT * FROM user_documents WHERE user_id = $userId";
         $result = $this->conn->query($sql);
         return $result->fetch_all(MYSQLI_ASSOC);
@@ -222,19 +237,15 @@ class User
     {
         // For sidebar badges
         $count = 0;
-        if ($role === 'super_admin') {
-            // Count pending_super_admin (Admins directly, Teachers step 2, Students step 3)
-            $sql = "SELECT COUNT(*) as count FROM users WHERE status = 'pending_super_admin'";
-        }
-        elseif ($role === 'admin') {
-            // Count pending_admin (Teachers step 1, Students step 2)
+        if ($role === 'admin') {
             $sql = "SELECT COUNT(*) as count FROM users WHERE status = 'pending_admin'";
-        }
-        elseif ($role === 'teacher') {
-            // Count pending_teacher (Students step 1)
+        } elseif ($role === 'principal') {
+            $sql = "SELECT COUNT(*) as count FROM users WHERE status = 'pending_principal'";
+        } elseif ($role === 'hod') {
+            $sql = "SELECT COUNT(*) as count FROM users WHERE status = 'pending_hod'";
+        } elseif ($role === 'teacher') {
             $sql = "SELECT COUNT(*) as count FROM users WHERE status = 'pending_teacher'";
-        }
-        else {
+        } else {
             return 0;
         }
 
@@ -243,5 +254,12 @@ class User
             $count = $row['count'];
         }
         return $count;
+    }
+
+    public function getAllDepartments()
+    {
+        $sql = "SELECT * FROM departments ORDER BY name";
+        $result = $this->conn->query($sql);
+        return $result->fetch_all(MYSQLI_ASSOC);
     }
 }

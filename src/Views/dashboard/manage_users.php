@@ -8,6 +8,8 @@ if ($currentUserRole === 'admin')
     $pageTitle = 'Staff & Student Directory';
 elseif ($currentUserRole === 'teacher')
     $pageTitle = 'My Students';
+elseif ($currentUserRole === 'principal')
+    $pageTitle = 'Staff & Student Directory';
 ?>
 
 <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100">
@@ -51,28 +53,28 @@ endif; ?>
         <!-- Tabs -->
         <div class="mt-8">
             <ul class="flex border-b">
-                <?php if ($currentUserRole === 'super_admin'): ?>
+                <?php if ($currentUserRole === 'admin' || $currentUserRole === 'principal'): ?>
                 <li class="-mb-px mr-1">
-                    <a class="bg-white inline-block border-l border-t border-r rounded-t py-2 px-4 text-blue-700 font-semibold" href="#admins" id="tab-admins" onclick="openTab(event, 'admins')">Admins</a>
+                    <a class="bg-white inline-block border-l border-t border-r rounded-t py-2 px-4 text-blue-700 font-semibold" href="#hods" id="tab-hods" onclick="openTab(event, 'hods')">HODs</a>
                 </li>
-                <?php
-endif; ?>
+                <?php endif; ?>
                 
-                <?php if (in_array($currentUserRole, ['super_admin', 'admin'])): ?>
+                <?php if (in_array($currentUserRole, ['super_admin', 'admin', 'principal'])): ?>
                 <li class="mr-1">
                     <a class="bg-white inline-block py-2 px-4 text-blue-500 hover:text-blue-800 font-semibold" href="#teachers" id="tab-teachers" onclick="openTab(event, 'teachers')">Teachers</a>
                 </li>
-                <?php
-endif; ?>
+                <?php endif; ?>
 
+                <?php if ($currentUserRole !== 'teacher'): ?>
                 <li class="mr-1">
                     <a class="bg-white inline-block py-2 px-4 text-blue-500 hover:text-blue-800 font-semibold" href="#students" id="tab-students" onclick="openTab(event, 'students')">Students</a>
                 </li>
+                <?php endif; ?>
             </ul>
 
             <div class="bg-white p-4 rounded-b-lg shadow-md">
                 <?php
-$roleGroups = ['admin' => [], 'teacher' => [], 'student' => []];
+$roleGroups = ['admin' => [], 'hod' => [], 'teacher' => [], 'student' => []];
 foreach ($users as $user) {
     if (isset($roleGroups[$user['role']])) {
         $roleGroups[$user['role']][] = $user;
@@ -80,21 +82,19 @@ foreach ($users as $user) {
 }
 ?>
 
-                <!-- Admin Tab -->
-                <?php if ($currentUserRole === 'super_admin'): ?>
-                <div id="admins" class="tab-content block">
-                    <?php renderUserTable($roleGroups['admin'], $currentUserRole); ?>
+                <!-- HOD Tab -->
+                <?php if ($currentUserRole === 'admin' || $currentUserRole === 'principal'): ?>
+                <div id="hods" class="tab-content block">
+                    <?php renderUserTable($roleGroups['hod'], $currentUserRole); ?>
                 </div>
-                <?php
-endif; ?>
+                <?php endif; ?>
 
                 <!-- Teacher Tab -->
-                <?php if (in_array($currentUserRole, ['super_admin', 'admin'])): ?>
-                <div id="teachers" class="tab-content <?php echo($currentUserRole === 'admin') ? 'block' : 'hidden'; ?>">
+                <?php if (in_array($currentUserRole, ['super_admin', 'admin', 'principal'])): ?>
+                <div id="teachers" class="tab-content <?php echo(in_array($currentUserRole, ['admin', 'principal'])) ? 'block' : 'hidden'; ?>">
                     <?php renderUserTable($roleGroups['teacher'], $currentUserRole); ?>
                 </div>
-                <?php
-endif; ?>
+                <?php endif; ?>
 
                 <!-- Student Tab -->
                 <div id="students" class="tab-content <?php echo($currentUserRole === 'teacher') ? 'block' : 'hidden'; ?>">

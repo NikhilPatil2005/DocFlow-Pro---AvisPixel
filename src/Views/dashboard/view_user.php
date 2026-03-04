@@ -27,7 +27,27 @@
                              <?php echo ucfirst($user['role']); ?>
                         </dd>
                     </div>
+                    <?php if ($user['role'] !== 'admin' && $user['role'] !== 'principal'): ?>
                     <div class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                        <dt class="text-sm font-medium text-gray-500">
+                            Department
+                        </dt>
+                        <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                            <?php 
+                                global $conn;
+                                $deptName = "Not Assigned";
+                                if (!empty($user['department_id'])) {
+                                    $deptResult = $conn->query("SELECT name FROM departments WHERE id = " . $user['department_id']);
+                                    if ($deptResult && $row = $deptResult->fetch_assoc()) {
+                                        $deptName = $row['name'];
+                                    }
+                                }
+                                echo htmlspecialchars($deptName);
+                            ?>
+                        </dd>
+                    </div>
+                    <?php endif; ?>
+                    <div class="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                         <dt class="text-sm font-medium text-gray-500">
                             Status
                         </dt>
@@ -75,7 +95,33 @@ endif; ?>
         <div class="mt-8 bg-white shadow sm:rounded-lg p-6">
             <h4 class="text-lg font-medium text-gray-900 mb-4">Administrative Actions</h4>
             
+            <?php 
+            // Get departments for assignment
+            global $conn;
+            $deptResult = $conn->query("SELECT * FROM departments ORDER BY name");
+            $departments = $deptResult ? $deptResult->fetch_all(MYSQLI_ASSOC) : [];
+            ?>
+
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <?php if (in_array($_SESSION['role'], ['admin', 'principal'])): ?>
+                <!-- Assign Department -->
+                <div class="border rounded p-4">
+                    <h5 class="font-medium text-gray-700 mb-2">Assign Department</h5>
+                    <form action="index.php?action=update_user_department" method="POST">
+                        <input type="hidden" name="user_id" value="<?php echo $user['id']; ?>">
+                        <select name="department_id" class="block w-full mt-1 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                            <option value="">No Department</option>
+                            <?php foreach ($departments as $dept): ?>
+                                <option value="<?php echo $dept['id']; ?>" <?php echo ($user['department_id'] == $dept['id']) ? 'selected' : ''; ?>>
+                                    <?php echo htmlspecialchars($dept['name']); ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                        <button type="submit" class="mt-2 w-full bg-indigo-600 text-white py-2 px-4 rounded hover:bg-indigo-700">Assign Department</button>
+                    </form>
+                </div>
+                <?php endif; ?>
+
                 <!-- Change Status -->
                 <div class="border rounded p-4">
                     <h5 class="font-medium text-gray-700 mb-2">Change Status</h5>
@@ -98,6 +144,8 @@ endif; ?>
                          <select name="role" class="block w-full mt-1 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
                             <option value="student" <?php echo $user['role'] === 'student' ? 'selected' : ''; ?>>Student</option>
                             <option value="teacher" <?php echo $user['role'] === 'teacher' ? 'selected' : ''; ?>>Teacher</option>
+                            <option value="hod" <?php echo $user['role'] === 'hod' ? 'selected' : ''; ?>>HOD</option>
+                            <option value="principal" <?php echo $user['role'] === 'principal' ? 'selected' : ''; ?>>Principal</option>
                             <option value="admin" <?php echo $user['role'] === 'admin' ? 'selected' : ''; ?>>Admin</option>
                         </select>
                          <button type="submit" class="mt-2 w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">Change Role</button>

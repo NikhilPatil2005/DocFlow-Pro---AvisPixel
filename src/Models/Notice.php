@@ -14,7 +14,7 @@ class Notice
         $title = sanitize($title);
         $content = sanitize($content);
         $priority = sanitize($priority);
-        $createdBy = (int)$createdBy;
+        $createdBy = (int) $createdBy;
 
         $sql = "INSERT INTO notices (title, content, created_by, status, priority) VALUES ('$title', '$content', $createdBy, 'pending_admin', '$priority')";
 
@@ -26,7 +26,7 @@ class Notice
 
     public function update($id, $title, $content, $priority = 'Low')
     {
-        $id = (int)$id;
+        $id = (int) $id;
         $title = sanitize($title);
         $content = sanitize($content);
         $priority = sanitize($priority);
@@ -37,14 +37,13 @@ class Notice
 
     public function updateStatus($id, $status, $rejectionReason = null)
     {
-        $id = (int)$id;
+        $id = (int) $id;
         $status = sanitize($status);
 
         if ($rejectionReason) {
             $rejectionReason = sanitize($rejectionReason);
             $sql = "UPDATE notices SET status = '$status', rejection_reason = '$rejectionReason' WHERE id = $id";
-        }
-        else {
+        } else {
             $sql = "UPDATE notices SET status = '$status', rejection_reason = NULL WHERE id = $id";
         }
 
@@ -53,7 +52,7 @@ class Notice
 
     public function getById($id)
     {
-        $id = (int)$id;
+        $id = (int) $id;
         $sql = "SELECT n.*, u.username as creator_name FROM notices n JOIN users u ON n.created_by = u.id WHERE n.id = $id";
         $result = $this->conn->query($sql);
         return $result->fetch_assoc();
@@ -98,34 +97,11 @@ class Notice
     {
         // For sidebar badges
         $count = 0;
-        if ($role === 'super_admin') {
-            // Can see all notices? Wait, Super Admin usually doesn't approve notices in this flow?
-            // "New Admin Request: Goes directly to the Super Admin" -> User approval
-            // "New Teacher Request: ... moves to the Super Admin" -> User approval
-            // What about notices?
-            // "Teacher will only see notices on this page that have already been cleared by the Admin."
-            // "Notice Approvals ... sequential approval workflow"
-            // Usually: Teacher creates -> Admin Approves -> Published?
-            // Or Teacher creates -> Admin Approves -> Super Admin Approves?
-            // Let's assume for notices:
-            // Admin sees 'pending_admin'.
-            // Teacher sees 'admin_approved' (to Publish).
-            // Super Admin? - Maybe just informational or override?
-            // Let's stick to requirements:
-            // "dedicated Notice Approval Page... Teachers will only see notices... cleared by Admin"
-
-            // If Super Admin needs to approve notices, we'd need a status like 'pending_super_admin' for notices too.
-            // For now, let's assume Super Admin doesn't have a specific "Notice Approval" queue unless specified.
-            // But they likely want to see everything.
-            return 0;
-        }
-        elseif ($role === 'admin') {
+        if ($role === 'admin') {
             $sql = "SELECT COUNT(*) as count FROM notices WHERE status = 'pending_admin'";
-        }
-        elseif ($role === 'teacher') {
+        } elseif ($role === 'teacher') {
             $sql = "SELECT COUNT(*) as count FROM notices WHERE status = 'admin_approved'";
-        }
-        else {
+        } else {
             return 0;
         }
 

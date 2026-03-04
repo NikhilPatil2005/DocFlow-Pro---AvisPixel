@@ -45,28 +45,26 @@ class ApprovalController
 
         if ($action === 'reject') {
             $newStatus = 'rejected';
-        }
-        else {
+        } else {
             // Approval Logic based on roles and current status
             if ($currentUserRole === 'teacher') {
-                // Teacher approves Student (pending_teacher -> pending_admin)
+                // Teacher approves Student
                 if ($targetRole === 'student' && $targetUser['status'] === 'pending_teacher') {
+                    $newStatus = 'pending_hod';
+                }
+            } elseif ($currentUserRole === 'hod') {
+                // HOD approves Teacher & Student
+                if (in_array($targetRole, ['teacher', 'student']) && $targetUser['status'] === 'pending_hod') {
+                    $newStatus = 'pending_principal';
+                }
+            } elseif ($currentUserRole === 'principal') {
+                // Principal approves HOD, Teacher, & Student
+                if (in_array($targetRole, ['hod', 'teacher', 'student']) && $targetUser['status'] === 'pending_principal') {
                     $newStatus = 'pending_admin';
                 }
-            }
-            elseif ($currentUserRole === 'admin') {
-                // Admin approves Teacher (pending_admin -> pending_super_admin)
-                if ($targetRole === 'teacher' && $targetUser['status'] === 'pending_admin') {
-                    $newStatus = 'pending_super_admin';
-                }
-                // Admin approves Student (pending_admin -> pending_super_admin)
-                elseif ($targetRole === 'student' && $targetUser['status'] === 'pending_admin') {
-                    $newStatus = 'pending_super_admin';
-                }
-            }
-            elseif ($currentUserRole === 'super_admin') {
-                // Super Admin approves ANY pending_super_admin -> active
-                if ($targetUser['status'] === 'pending_super_admin') {
+            } elseif ($currentUserRole === 'admin') {
+                // Admin approves Principal, HOD, Teacher, & Student to active
+                if ($targetUser['status'] === 'pending_admin') {
                     $newStatus = 'active';
                 }
             }
@@ -85,12 +83,10 @@ class ApprovalController
                 }
 
                 redirect('index.php?action=registration_requests&success=User ' . ucfirst($action) . 'ed successfully');
-            }
-            else {
+            } else {
                 redirect('index.php?action=registration_requests&error=Database update failed');
             }
-        }
-        else {
+        } else {
             redirect('index.php?action=registration_requests&error=Unauthorized or Invalid Action for this Role');
         }
     }

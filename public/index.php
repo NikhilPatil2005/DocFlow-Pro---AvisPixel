@@ -8,6 +8,7 @@ require_once __DIR__ . '/../src/Controllers/DashboardController.php';
 require_once __DIR__ . '/../src/Controllers/NoticeController.php';
 require_once __DIR__ . '/../src/Controllers/ApprovalController.php';
 require_once __DIR__ . '/../src/Controllers/UserController.php';
+require_once __DIR__ . '/../src/Controllers/LeaveController.php';
 
 $action = $_GET['action'] ?? 'login';
 
@@ -16,17 +17,21 @@ $dashboardController = new DashboardController();
 $noticeController = new NoticeController($conn);
 $approvalController = new ApprovalController($conn);
 $userController = new UserController($conn);
+$leaveController = new LeaveController($conn);
 
 switch ($action) {
     case 'login':
         if (isLoggedIn()) {
             // Redirect to appropriate dashboard if already logged in
             switch (currentRole()) {
-                case 'super_admin':
-                    redirect('index.php?action=super_admin_dashboard');
-                    break;
                 case 'admin':
                     redirect('index.php?action=admin_dashboard');
+                    break;
+                case 'principal':
+                    redirect('index.php?action=principal_dashboard');
+                    break;
+                case 'hod':
+                    redirect('index.php?action=hod_dashboard');
                     break;
                 case 'teacher':
                     redirect('index.php?action=teacher_dashboard');
@@ -71,6 +76,23 @@ switch ($action) {
         $noticeController->view();
         break;
 
+    // Leave Management
+    case 'apply_leave':
+        $leaveController->apply();
+        break;
+    case 'manage_leaves':
+        $leaveController->manage();
+        break;
+    case 'approve_leave':
+        $leaveController->approve();
+        break;
+    case 'reject_leave':
+        $leaveController->reject();
+        break;
+    case 'my_leaves':
+        $leaveController->myHistory();
+        break;
+
     // User Approvals
     case 'approve_user':
         $approvalController->approve();
@@ -101,11 +123,14 @@ switch ($action) {
         break;
 
     // Dashboards
-    case 'super_admin_dashboard':
-        $dashboardController->superAdmin();
-        break;
     case 'admin_dashboard':
         $dashboardController->admin();
+        break;
+    case 'principal_dashboard':
+        $dashboardController->principal();
+        break;
+    case 'hod_dashboard':
+        $dashboardController->hod();
         break;
     case 'teacher_dashboard':
         $dashboardController->teacher();
@@ -126,6 +151,9 @@ switch ($action) {
         break;
     case 'update_user_role':
         $userController->updateUserRole();
+        break;
+    case 'update_user_department':
+        $userController->updateUserDepartment();
         break;
     case 'delete_user':
         $userController->deleteUser();

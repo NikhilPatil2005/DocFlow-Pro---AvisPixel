@@ -6,17 +6,14 @@ class UserController
 {
     private $userModel;
 
-    public function __construct()
+    public function __construct($db)
     {
-        global $conn;
-        $this->userModel = new User($conn);
+        $this->userModel = new User($db);
     }
 
     public function index()
     {
-        requireLogin();
-        // Allow super_admin, admin, teacher
-        requireRole(['super_admin', 'admin', 'teacher']);
+        requireRole(['admin', 'principal', 'hod', 'teacher']);
 
         $search = $_GET['search'] ?? '';
         $role = $_GET['role'] ?? '';
@@ -38,7 +35,7 @@ class UserController
     public function viewUser()
     {
         requireLogin();
-        requireRole(['super_admin', 'admin', 'teacher']);
+        requireRole(['admin', 'principal', 'hod', 'teacher']);
 
         $id = $_GET['id'] ?? 0;
         $user = $this->userModel->getUserById($id);
@@ -51,12 +48,12 @@ class UserController
         // Access Control Logic
         $currentUserRole = $_SESSION['role'];
         if ($currentUserRole === 'admin') {
-            if (in_array($user['role'], ['super_admin', 'admin'])) {
+            if (in_array($user['role'], ['admin'])) {
                 die("Access Denied: You cannot view this profile.");
             }
-        }
-        elseif ($currentUserRole === 'teacher') {
-            if ($user['role'] !== 'student') {
+        } elseif (in_array($currentUserRole, ['principal', 'hod', 'teacher'])) {
+            // Simplified
+            if ($user['role'] === 'admin') {
                 die("Access Denied: You cannot view this profile.");
             }
         }
@@ -78,7 +75,7 @@ class UserController
     public function updateUserStatus()
     {
         requireLogin();
-        requireRole(['super_admin']);
+        requireRole(['admin', 'principal', 'hod']);
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $userId = $_POST['user_id'];
@@ -87,8 +84,7 @@ class UserController
 
             if ($this->userModel->updateStatus($userId, $status)) {
                 redirect('index.php?action=manage_users&success=User status updated');
-            }
-            else {
+            } else {
                 redirect('index.php?action=manage_users&error=Failed to update status');
             }
         }
@@ -97,7 +93,7 @@ class UserController
     public function updateUserRole()
     {
         requireLogin();
-        requireRole(['super_admin']);
+        requireRole(['admin']);
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $userId = $_POST['user_id'];
@@ -105,9 +101,25 @@ class UserController
 
             if ($this->userModel->updateUserRole($userId, $role)) {
                 redirect('index.php?action=manage_users&success=User role updated');
-            }
-            else {
+            } else {
                 redirect('index.php?action=manage_users&error=Failed to update role');
+            }
+        }
+    }
+
+    public function updateUserDepartment()
+    {
+        requireLogin();
+        requireRole(['admin', 'principal']);
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $userId = $_POST['user_id'];
+            $departmentId = $_POST['department_id'] ?? null;
+
+            if ($this->userModel->updateUserDepartment($userId, $departmentId)) {
+                redirect('index.php?action=view_user&id=' . $userId . '&success=Department updated successfully');
+            } else {
+                redirect('index.php?action=view_user&id=' . $userId . '&error=Failed to update department');
             }
         }
     }
@@ -115,14 +127,13 @@ class UserController
     public function deleteUser()
     {
         requireLogin();
-        requireRole(['super_admin']);
+        requireRole(['admin']);
 
         $userId = $_POST['user_id'] ?? 0;
 
         if ($this->userModel->deleteUser($userId)) {
             redirect('index.php?action=manage_users&success=User deleted');
-        }
-        else {
+        } else {
             redirect('index.php?action=manage_users&error=Failed to delete user');
         }
     }
