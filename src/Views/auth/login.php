@@ -1,50 +1,185 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Faculty Management System</title>
+    <title>E-Office Login - Digital Administration Portal</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body {
+        * {
             font-family: 'Inter', sans-serif;
         }
 
-        /* Custom scrollbar for the portals list */
+        body {
+            background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
+            color: #374151;
+        }
+
+        /* Card Container */
+        .card-container {
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            animation: slideUp 0.5s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Custom scrollbar */
         .custom-scrollbar::-webkit-scrollbar {
             width: 6px;
         }
 
         .custom-scrollbar::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 4px;
+            background: transparent;
         }
 
         .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 4px;
+            background: #d1d5db;
+            border-radius: 3px;
         }
 
         .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-            background: #94a3b8;
+            background: #9ca3af;
         }
 
         .hidden-view {
             display: none;
         }
+
+        /* Portal Card */
+        .portal-btn {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+        }
+
+        .portal-btn:not(.opacity-60):hover {
+            border-color: #10b981;
+            box-shadow: 0 8px 24px rgba(16, 185, 129, 0.12);
+            transform: translateY(-2px);
+        }
+
+        /* Modern Button */
+        .modern-btn {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 12px 24px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+
+        .modern-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+        }
+
+        .modern-btn:active {
+            transform: translateY(0);
+        }
+
+        /* Modern Input */
+        .modern-input {
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            padding: 12px 16px;
+            transition: all 0.3s ease;
+        }
+
+        .modern-input:focus {
+            background: #ffffff;
+            border-color: #10b981;
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+            outline: none;
+        }
+
+        /* Portal Icon Styling */
+        .portal-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            font-size: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .portal-btn:not(.opacity-60):hover .portal-icon {
+            transform: scale(1.05);
+        }
+
+        .icon-orange {
+            background: rgba(245, 158, 11, 0.1);
+            color: #f59e0b;
+        }
+
+        .icon-indigo {
+            background: rgba(79, 70, 229, 0.1);
+            color: #4f46e5;
+        }
+
+        .icon-emerald {
+            background: rgba(16, 185, 129, 0.1);
+            color: #10b981;
+        }
+
+        .icon-purple {
+            background: rgba(168, 85, 247, 0.1);
+            color: #a855f7;
+        }
+
+        .icon-cyan {
+            background: rgba(34, 211, 238, 0.1);
+            color: #22d3ee;
+        }
+
+        .icon-pink {
+            background: rgba(236, 72, 153, 0.1);
+            color: #ec4899;
+        }
+
+        .icon-sky {
+            background: rgba(14, 165, 233, 0.1);
+            color: #0ea5e9;
+        }
+
+        .icon-rose {
+            background: rgba(244, 63, 94, 0.1);
+            color: #f43f5e;
+        }
+
+        .icon-slate {
+            background: rgba(100, 116, 139, 0.1);
+            color: #64748b;
+        }
     </style>
 </head>
 
-<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
+<body class="flex items-center justify-center min-h-screen p-4">
 
     <!-- Card Container -->
-    <div class="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden relative">
+    <div class="card-container w-full max-w-md overflow-hidden relative">
 
         <?php if (isset($error)): ?>
-            <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 m-6 mb-0 text-sm rounded-r-lg" role="alert">
-                <p class="font-bold">Error</p>
+            <div class="bg-red-50 border-l-4 border-red-500 text-red-700 p-4 m-6 mb-0 text-sm rounded-r-lg" role="alert">
+                <p class="font-bold flex items-center"><i class="fas fa-exclamation-circle mr-2"></i>Error</p>
                 <p><?php echo htmlspecialchars($error); ?></p>
             </div>
         <?php endif; ?>
@@ -52,255 +187,145 @@
         <!-- === PORTALS LIST VIEW === -->
         <div id="portals-view">
             <!-- Header -->
-            <div class="p-6 border-b border-gray-100 flex items-center space-x-4">
-                <div class="bg-blue-100 p-3 rounded-xl text-blue-600">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24"
-                        stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 14l9-5-9-5-9 5 9 5z" />
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
-                    </svg>
+            <div class="p-6 border-b border-gray-100 flex items-center space-x-4 bg-gradient-to-r from-emerald-50 to-white">
+                <div class="bg-gradient-to-br from-emerald-500 to-emerald-600 p-3 rounded-xl text-white shadow-lg">
+                    <i class="fas fa-door-open text-lg"></i>
                 </div>
-                <h1 class="text-2xl font-bold text-gray-900">Login Portals</h1>
+                <div>
+                    <h1 class="text-2xl font-bold text-gray-900">Login Portals</h1>
+                    <p class="text-sm text-gray-600">Choose your role to continue</p>
+                </div>
             </div>
 
             <!-- Portals List (Scrollable) -->
-            <div class="p-4 sm:p-6 max-h-[60vh] overflow-y-auto custom-scrollbar space-y-3">
+            <div class="p-4 sm:p-6 max-h-[65vh] overflow-y-auto custom-scrollbar space-y-3">
 
                 <!-- Student Portal -->
-                <button onclick="showLogin('student', 'Student Portal')"
-                    class="w-full text-left flex items-center p-4 border border-gray-100 rounded-xl hover:shadow-md hover:border-gray-200 transition-all group bg-white">
-                    <div class="bg-gray-50 p-3 rounded-lg text-gray-500 group-hover:bg-gray-100 transition-colors">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 14l9-5-9-5-9 5 9 5z" />
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
-                        </svg>
+                <button onclick="showLogin('student', 'Student Portal')" class="portal-btn w-full text-left flex items-center p-4 rounded-xl transition-all bg-white">
+                    <div class="portal-icon icon-orange">
+                        <i class="fas fa-graduation-cap"></i>
                     </div>
                     <div class="ml-4 flex-1">
-                        <h2 class="text-gray-900 font-semibold text-lg">Student Portal</h2>
-                        <p class="text-gray-500 text-sm">Access your academic records</p>
+                        <h2 class="text-gray-900 font-semibold text-base">Student Portal</h2>
+                        <p class="text-gray-600 text-sm">Access your academic records</p>
                     </div>
-                    <div class="text-gray-300 group-hover:text-gray-500 transition-colors">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd"
-                                d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                                clip-rule="evenodd" />
-                        </svg>
-                    </div>
+                    <div class="text-gray-400 text-sm"><i class="fas fa-chevron-right"></i></div>
                 </button>
 
                 <!-- Faculty Portal (Teacher) -->
-                <button onclick="showLogin('teacher', 'Faculty Portal')"
-                    class="w-full text-left flex items-center p-4 border border-gray-100 rounded-xl hover:shadow-md hover:border-gray-200 transition-all group bg-white">
-                    <div class="bg-gray-50 p-3 rounded-lg text-gray-500 group-hover:bg-gray-100 transition-colors">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
+                <button onclick="showLogin('teacher', 'Faculty Portal')" class="portal-btn w-full text-left flex items-center p-4 rounded-xl transition-all bg-white">
+                    <div class="portal-icon icon-indigo">
+                        <i class="fas fa-chalkboard-user"></i>
                     </div>
                     <div class="ml-4 flex-1">
-                        <h2 class="text-gray-900 font-semibold text-lg">Faculty Portal</h2>
-                        <p class="text-gray-500 text-sm">Teacher and faculty access</p>
+                        <h2 class="text-gray-900 font-semibold text-base">Faculty Portal</h2>
+                        <p class="text-gray-600 text-sm">Faculty management system</p>
                     </div>
-                    <div class="text-gray-300 group-hover:text-gray-500 transition-colors">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd"
-                                d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                                clip-rule="evenodd" />
-                        </svg>
-                    </div>
+                    <div class="text-gray-400 text-sm"><i class="fas fa-chevron-right"></i></div>
                 </button>
 
                 <!-- HOD Portal -->
-                <button onclick="showLogin('hod', 'HOD Portal')"
-                    class="w-full text-left flex items-center p-4 border border-gray-100 rounded-xl hover:shadow-md hover:border-gray-200 transition-all group bg-white">
-                    <div
-                        class="bg-orange-50 p-3 rounded-lg text-orange-600 group-hover:bg-orange-100 transition-colors">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-                        </svg>
+                <button onclick="showLogin('hod', 'HOD Portal')" class="portal-btn w-full text-left flex items-center p-4 rounded-xl transition-all bg-white">
+                    <div class="portal-icon icon-emerald">
+                        <i class="fas fa-sitemap"></i>
                     </div>
                     <div class="ml-4 flex-1">
                         <div class="flex items-center space-x-2">
-                            <h2 class="text-gray-900 font-semibold text-lg">HOD Portal</h2>
-                            <span
-                                class="bg-indigo-100 text-indigo-700 text-xs font-medium px-2 py-0.5 rounded">Management</span>
+                            <h2 class="text-gray-900 font-semibold text-base">HOD Portal</h2>
+                            <span class="bg-emerald-100 text-emerald-700 text-xs font-medium px-2 py-0.5 rounded">Department</span>
                         </div>
-                        <p class="text-gray-500 text-sm">Department approvals & management</p>
+                        <p class="text-gray-600 text-sm">Department approvals & management</p>
                     </div>
-                    <div class="text-gray-300 group-hover:text-gray-500 transition-colors">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd"
-                                d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                                clip-rule="evenodd" />
-                        </svg>
-                    </div>
+                    <div class="text-gray-400 text-sm"><i class="fas fa-chevron-right"></i></div>
                 </button>
 
                 <!-- Principal Portal -->
-                <button onclick="showLogin('principal', 'Principal Portal')"
-                    class="w-full text-left flex items-center p-4 border border-gray-100 rounded-xl hover:shadow-md hover:border-gray-200 transition-all group bg-white">
-                    <div
-                        class="bg-purple-50 p-3 rounded-lg text-purple-600 group-hover:bg-purple-100 transition-colors">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 14l9-5-9-5-9 5 9 5z" />
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
-                        </svg>
+                <button onclick="showLogin('principal', 'Principal Portal')" class="portal-btn w-full text-left flex items-center p-4 rounded-xl transition-all bg-white">
+                    <div class="portal-icon icon-purple">
+                        <i class="fas fa-user-tie"></i>
                     </div>
                     <div class="ml-4 flex-1">
                         <div class="flex items-center space-x-2">
-                            <h2 class="text-gray-900 font-semibold text-lg">Principal Portal</h2>
-                            <span
-                                class="bg-green-100 text-green-700 text-xs font-medium px-2 py-0.5 rounded">Executive</span>
+                            <h2 class="text-gray-900 font-semibold text-base">Principal Portal</h2>
+                            <span class="bg-purple-100 text-purple-700 text-xs font-medium px-2 py-0.5 rounded">Executive</span>
                         </div>
-                        <p class="text-gray-500 text-sm">Institution overview & final approvals</p>
+                        <p class="text-gray-600 text-sm">Leadership & final approvals</p>
                     </div>
-                    <div class="text-gray-300 group-hover:text-gray-500 transition-colors">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd"
-                                d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                                clip-rule="evenodd" />
-                        </svg>
-                    </div>
+                    <div class="text-gray-400 text-sm"><i class="fas fa-chevron-right"></i></div>
                 </button>
 
                 <!-- Admin Portal -->
-                <button onclick="showLogin('admin', 'Admin Portal')"
-                    class="w-full text-left flex items-center p-4 border border-gray-100 rounded-xl hover:shadow-md hover:border-gray-200 transition-all group bg-white">
-                    <div class="bg-blue-50 p-3 rounded-lg text-blue-500 group-hover:bg-blue-100 transition-colors">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                        </svg>
+                <button onclick="showLogin('admin', 'Admin Portal')" class="portal-btn w-full text-left flex items-center p-4 rounded-xl transition-all bg-white">
+                    <div class="portal-icon icon-cyan">
+                        <i class="fas fa-cogs"></i>
                     </div>
                     <div class="ml-4 flex-1">
                         <div class="flex items-center space-x-2">
-                            <h2 class="text-gray-900 font-semibold text-lg">Admin / System Portal</h2>
-                            <span class="bg-red-100 text-red-700 text-xs font-medium px-2 py-0.5 rounded">System</span>
+                            <h2 class="text-gray-900 font-semibold text-base">Admin Portal</h2>
+                            <span class="bg-cyan-100 text-cyan-700 text-xs font-medium px-2 py-0.5 rounded">System</span>
                         </div>
-                        <p class="text-gray-500 text-sm">System administration and controls</p>
+                        <p class="text-gray-600 text-sm">System administration</p>
                     </div>
-                    <div class="text-gray-300 group-hover:text-gray-500 transition-colors">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd"
-                                d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                                clip-rule="evenodd" />
-                        </svg>
-                    </div>
+                    <div class="text-gray-400 text-sm"><i class="fas fa-chevron-right"></i></div>
                 </button>
 
-                <!-- Parent Portal (Mock) -->
-                <button onclick="showLogin('parent', 'Parent Portal (Mock)')"
-                    class="w-full text-left flex items-center p-4 border border-gray-100 rounded-xl hover:shadow-md hover:border-gray-200 transition-all group bg-white">
-                    <div class="bg-gray-50 p-3 rounded-lg text-gray-500 group-hover:bg-gray-100 transition-colors">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                        </svg>
+                <!-- Coming Soon Portals -->
+
+                <!-- Parent Portal -->
+                <button onclick="event.preventDefault()" class="portal-btn w-full text-left flex items-center p-4 rounded-xl cursor-not-allowed bg-white opacity-60">
+                    <div class="portal-icon icon-pink">
+                        <i class="fas fa-heart"></i>
                     </div>
                     <div class="ml-4 flex-1">
-                        <h2 class="text-gray-900 font-semibold text-lg">Parent Portal</h2>
-                        <p class="text-gray-500 text-sm">Track your ward's progress</p>
+                        <h2 class="text-gray-900 font-semibold text-base">Parent Portal</h2>
+                        <p class="text-gray-600 text-sm">Track your ward's progress</p>
                     </div>
-                    <div class="text-gray-300 group-hover:text-gray-500 transition-colors">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd"
-                                d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                                clip-rule="evenodd" />
-                        </svg>
-                    </div>
+                    <div class="text-gray-400 text-sm"><i class="fas fa-lock"></i></div>
                 </button>
 
                 <!-- Alumni Portal -->
-                <button onclick="showLogin('alumni', 'Alumni Portal (Mock)')"
-                    class="w-full text-left flex items-center p-4 border border-gray-100 rounded-xl hover:shadow-md hover:border-gray-200 transition-all group bg-white">
-                    <div class="bg-gray-50 p-3 rounded-lg text-gray-500 group-hover:bg-gray-100 transition-colors">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 14l9-5-9-5-9 5 9 5z" />
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
-                        </svg>
+                <button onclick="event.preventDefault()" class="portal-btn w-full text-left flex items-center p-4 rounded-xl cursor-not-allowed bg-white opacity-60">
+                    <div class="portal-icon icon-sky">
+                        <i class="fas fa-network-wired"></i>
                     </div>
                     <div class="ml-4 flex-1">
                         <div class="flex items-center space-x-2">
-                            <h2 class="text-gray-900 font-semibold text-lg">Alumni Portal</h2>
-                            <span
-                                class="bg-green-100 text-green-700 text-xs font-medium px-2 py-0.5 rounded">External</span>
+                            <h2 class="text-gray-900 font-semibold text-base">Alumni Portal</h2>
+                            <span class="bg-gray-100 text-gray-700 text-xs font-medium px-2 py-0.5 rounded">Coming Soon</span>
                         </div>
-                        <p class="text-gray-500 text-sm">Connect, Share, Inspire</p>
+                        <p class="text-gray-600 text-sm">Connect and share with alumni</p>
                     </div>
-                    <div class="text-gray-300 group-hover:text-gray-500 transition-colors">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd"
-                                d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                                clip-rule="evenodd" />
-                        </svg>
-                    </div>
+                    <div class="text-gray-400 text-sm"><i class="fas fa-lock"></i></div>
                 </button>
 
-                <!-- IRINS -->
-                <button onclick="showLogin('irins', 'IRINS (Mock)')"
-                    class="w-full text-left flex items-center p-4 border border-gray-100 rounded-xl hover:shadow-md hover:border-gray-200 transition-all group bg-white">
-                    <div class="bg-gray-50 p-3 rounded-lg text-gray-500 group-hover:bg-gray-100 transition-colors">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                        </svg>
+                <!-- IRINS Portal -->
+                <button onclick="event.preventDefault()" class="portal-btn w-full text-left flex items-center p-4 rounded-xl cursor-not-allowed bg-white opacity-60">
+                    <div class="portal-icon icon-rose">
+                        <i class="fas fa-book"></i>
                     </div>
                     <div class="ml-4 flex-1">
                         <div class="flex items-center space-x-2">
-                            <h2 class="text-gray-900 font-semibold text-lg">IRINS</h2>
-                            <span
-                                class="bg-green-100 text-green-700 text-xs font-medium px-2 py-0.5 rounded">External</span>
+                            <h2 class="text-gray-900 font-semibold text-base">IRINS</h2>
+                            <span class="bg-gray-100 text-gray-700 text-xs font-medium px-2 py-0.5 rounded">External</span>
                         </div>
-                        <p class="text-gray-500 text-sm">Research Portal Access</p>
+                        <p class="text-gray-600 text-sm">Research portal access</p>
                     </div>
-                    <div class="text-gray-300 group-hover:text-gray-500 transition-colors">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd"
-                                d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                                clip-rule="evenodd" />
-                        </svg>
-                    </div>
+                    <div class="text-gray-400 text-sm"><i class="fas fa-external-link-alt"></i></div>
                 </button>
 
-                <!-- Private Cloud -->
-                <button onclick="showLogin('cloud', 'Private Cloud (Mock)')"
-                    class="w-full text-left flex items-center p-4 border border-gray-100 rounded-xl hover:shadow-md hover:border-gray-200 transition-all group bg-white">
-                    <div class="bg-gray-50 p-3 rounded-lg text-gray-500 group-hover:bg-gray-100 transition-colors">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" />
-                        </svg>
+                <!-- Private Cloud Portal -->
+                <button onclick="event.preventDefault()" class="portal-btn w-full text-left flex items-center p-4 rounded-xl cursor-not-allowed bg-white opacity-60">
+                    <div class="portal-icon icon-slate">
+                        <i class="fas fa-cloud"></i>
                     </div>
                     <div class="ml-4 flex-1">
                         <div class="flex items-center space-x-2">
-                            <h2 class="text-gray-900 font-semibold text-lg">Private Cloud</h2>
-                            <span
-                                class="bg-green-100 text-green-700 text-xs font-medium px-2 py-0.5 rounded">External</span>
+                            <h2 class="text-gray-900 font-semibold text-base">Private Cloud</h2>
+                            <span class="bg-gray-100 text-gray-700 text-xs font-medium px-2 py-0.5 rounded">External</span>
                         </div>
-                        <p class="text-gray-500 text-sm truncate w-48"
-                            title="Access to all Databases, E-books, E-journals">Access to all Databases, E-books...</p>
+                        <p class="text-gray-600 text-sm truncate">Access databases & resources</p>
                     </div>
-                    <div class="text-gray-300 group-hover:text-gray-500 transition-colors">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd"
-                                d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                                clip-rule="evenodd" />
-                        </svg>
-                    </div>
+                    <div class="text-gray-400 text-sm"><i class="fas fa-external-link-alt"></i></div>
                 </button>
 
             </div>
@@ -308,72 +333,58 @@
 
         <!-- === ACTUAL LOGIN FORM VIEW === -->
         <div id="login-view" class="hidden-view p-6 sm:p-8">
-            <button onclick="showPortals()"
-                class="mb-6 flex items-center text-sm font-medium text-gray-500 hover:text-gray-700 transition-colors">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24"
-                    stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                </svg>
-                Back to Portals
+            <button onclick="showPortals()" class="mb-6 flex items-center text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">
+                <i class="fas fa-arrow-left mr-2 text-emerald-600"></i>Back to Portals
             </button>
 
-            <div class="mb-8 text-center sm:text-left">
+            <div class="mb-8">
                 <h2 id="login-title" class="text-2xl font-bold text-gray-900">Sign In</h2>
-                <p class="text-gray-500 mt-2">Enter your credentials to continue</p>
+                <p class="text-gray-600 mt-2 text-sm">Enter your credentials to continue</p>
             </div>
 
-            <form action="index.php?action=login" method="POST" class="space-y-6">
-                <!-- Selected Role will be stored here -->
+            <form action="index.php?action=login" method="POST" class="space-y-5">
+                <!-- Selected Role (Hidden) -->
                 <input type="hidden" name="role" id="role-input" value="student">
 
+                <!-- Username Field -->
                 <div>
-                    <label for="username" class="block text-sm font-medium text-gray-700">Username</label>
-                    <input type="text" name="username" id="username" required
-                        class="mt-1 block w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-xl focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition duration-150 ease-in-out">
+                    <label for="username" class="block text-sm font-medium text-gray-700 mb-2">Username</label>
+                    <input type="text" name="username" id="username" required autocomplete="username" placeholder="Enter your username"
+                        class="modern-input w-full text-sm">
                 </div>
 
+                <!-- Password Field -->
                 <div>
-                    <div class="flex items-center justify-between">
+                    <div class="flex items-center justify-between mb-2">
                         <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
-                        <a href="index.php?action=check_status"
-                            class="text-sm font-medium text-blue-600 hover:text-blue-500">Registration Status?</a>
+                        <a href="index.php?action=check_status" class="text-xs font-medium text-emerald-600 hover:text-emerald-700">Check registration?</a>
                     </div>
-                    <input type="password" name="password" id="password" required
-                        class="mt-1 block w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-xl focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition duration-150 ease-in-out">
+                    <input type="password" name="password" id="password" required autocomplete="current-password" placeholder="Enter your password"
+                        class="modern-input w-full text-sm">
                 </div>
 
-                <div>
-                    <button type="submit"
-                        class="group relative w-full flex justify-center py-3 px-4 border border-transparent rounded-xl shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
-                        <span class="absolute left-0 inset-y-0 flex items-center pl-3">
-                            <svg class="h-5 w-5 text-blue-500 group-hover:text-blue-400"
-                                xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
-                                aria-hidden="true">
-                                <path fill-rule="evenodd"
-                                    d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"
-                                    clip-rule="evenodd" />
-                            </svg>
-                        </span>
-                        Sign in
-                    </button>
-                </div>
+                <!-- Submit Button -->
+                <button type="submit" class="modern-btn w-full flex items-center justify-center gap-2 mt-6 sm:mt-8">
+                    <i class="fas fa-sign-in-alt"></i>Sign In
+                </button>
             </form>
 
-            <div class="mt-6 text-center text-sm text-gray-500">
-                <p>Don't have an account? <a href="index.php?action=register"
-                        class="font-medium text-blue-600 hover:text-blue-500">Register here</a>.</p>
+            <!-- Footer Link -->
+            <div class="mt-6 text-center text-sm text-gray-600 border-t border-gray-200 pt-6">
+                New here? <a href="index.php?action=register" class="font-medium text-emerald-600 hover:text-emerald-700">Create account</a>
             </div>
         </div>
 
     </div>
 
-    <!-- JS to handle flipping between Views -->
+    <!-- JavaScript -->
     <script>
         function showLogin(role, title) {
             document.getElementById('portals-view').classList.add('hidden-view');
             document.getElementById('login-view').classList.remove('hidden-view');
             document.getElementById('role-input').value = role;
-            document.getElementById('login-title').innerText = 'Log in to ' + title;
+            document.getElementById('login-title').innerText = 'Sign in to ' + title;
+            document.getElementById('username').focus();
         }
 
         function showPortals() {
@@ -381,7 +392,7 @@
             document.getElementById('portals-view').classList.remove('hidden-view');
         }
 
-        // If there was a login error, automatically switch to the form view
+        // Auto-show login form if there was an error
         <?php if (isset($error) && isset($_POST['role'])): ?>
             let attemptedRole = <?php echo json_encode($_POST['role']); ?>;
             let titleMap = {
@@ -389,7 +400,11 @@
                 'teacher': 'Faculty Portal',
                 'hod': 'HOD Portal',
                 'principal': 'Principal Portal',
-                'admin': 'Admin / System Portal'
+                'admin': 'Admin Portal',
+                'parent': 'Parent Portal',
+                'alumni': 'Alumni Portal',
+                'irins': 'IRINS',
+                'cloud': 'Private Cloud'
             };
             showLogin(attemptedRole, titleMap[attemptedRole] || 'Portal');
         <?php endif; ?>

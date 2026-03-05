@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Office Portal - Digital Administration System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: #ffffff;
+            color: #374151;
+        }
+
+        /* Smooth transitions */
+        .transition-all {
+            transition: all 0.3s ease;
+        }
+
+        /* Sidebar animation */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            right: -400px;
+            width: 400px;
+            height: 100vh;
+            background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%);
+            box-shadow: -4px 0 20px rgba(0, 0, 0, 0.1);
+            z-index: 50;
+            transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow-y: auto;
+        }
+
+        .sidebar.active {
+            right: 0;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0);
+            z-index: 40;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .overlay.active {
+            background: rgba(0, 0, 0, 0.5);
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        /* Portal card hover effect */
+        .portal-card {
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .portal-card:hover {
+            border-color: #10b981;
+            box-shadow: 0 8px 24px rgba(16, 185, 129, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .portal-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-bottom: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .portal-card:hover .portal-icon {
+            transform: scale(1.1);
+        }
+
+        /* Hero image styling */
+        .hero-image {
+            background: linear-gradient(135deg, #1F2933 0%, #2d3748 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-image::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600"><defs><pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/></pattern></pattern></defs><rect width="1200" height="600" fill="%231F2933"/><rect width="1200" height="600" fill="url(%23grid)"/></svg>');
+            opacity: 0.5;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Login button styling */
+        .login-btn {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            padding: 10px 24px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4);
+        }
+
+        .login-btn:active {
+            transform: translateY(0);
+        }
+
+        /* Section titles */
+        .section-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1f2933;
+            margin-bottom: 16px;
+        }
+
+        /* Sidebar header */
+        .sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            border-bottom: 1px solid #e5e7eb;
+            background: #ffffff;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #6b7280;
+            transition: color 0.2s ease;
+        }
+
+        .close-btn:hover {
+            color: #1f2933;
+        }
+
+        /* Custom scrollbar */
+        .sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .sidebar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background: #d1d5db;
+            border-radius: 3px;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb:hover {
+            background: #9ca3af;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                right: -100%;
+            }
+
+            .grid-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .section-title {
+                font-size: 24px;
+            }
+        }
+
+        /* About section styling */
+        .about-section {
+            background: #ffffff;
+            padding: 40px;
+            border-radius: 12px;
+            margin-top: 24px;
+        }
+
+        .about-text {
+            color: #4b5563;
+            line-height: 1.8;
+            font-size: 15px;
+            margin-bottom: 16px;
+        }
+
+        /* Animation for fade-in */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        /* Color scheme for icons */
+        .icon-admin {
+            background: rgba(16, 185, 129, 0.1);
+            color: #10b981;
+        }
+
+        .icon-student {
+            background: rgba(245, 158, 11, 0.1);
+            color: #f59e0b;
+        }
+
+        .icon-faculty {
+            background: rgba(79, 70, 229, 0.1);
+            color: #4f46e5;
+        }
+
+        .icon-parent {
+            background: rgba(236, 72, 153, 0.1);
+            color: #ec4899;
+        }
+
+        .icon-alumni {
+            background: rgba(59, 130, 246, 0.1);
+            color: #3b82f6;
+        }
+
+        .icon-research {
+            background: rgba(168, 85, 247, 0.1);
+            color: #a855f7;
+        }
+
+        .icon-cloud {
+            background: rgba(14, 165, 233, 0.1);
+            color: #0ea5e9;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="bg-white border-b border-gray-200 shadow-sm sticky top-0 z-30">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-building text-white text-lg"></i>
+                </div>
+                <h1 class="text-xl font-bold text-gray-900">E-Office</h1>
+            </div>
+            <button class="login-btn" id="loginBtn">
+                <i class="fas fa-sign-in-alt mr-2"></i>Login
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="min-h-screen bg-gradient-to-b from-white to-gray-50">
+        <div class="max-w-7xl mx-auto px-6 py-12">
+            <div class="grid grid-cols-12 gap-8 items-stretch grid-layout">
+                <!-- Left Column - Hero Section -->
+                <div class="col-span-5 fade-in">
+                    <!-- Hero Image -->
+                    <div class="hero-image h-80 rounded-16 mb-8 hero-content flex items-end p-8">
+                        <div class="relative z-20">
+                            <div class="inline-block bg-white rounded-lg px-4 py-2 mb-4 shadow-lg">
+                                <span class="text-sm font-semibold text-gray-800">
+                                    <i class="fas fa-file-alt mr-2 text-emerald-600"></i>
+                                    Digital Administration
+                                </span>
+                            </div>
+                            <p class="text-white text-lg font-semibold">Secure & Fast</p>
+                        </div>
+                    </div>
+
+                    <!-- About Section -->
+                    <div class="about-section fade-in">
+                        <h2 class="section-title">About E-Office</h2>
+                        <p class="about-text">
+                            The E-Office platform represents a modern approach to digital administration and workflow management. It simplifies document handling, improves transparency, and enables efficient coordination across departments and users.
+                        </p>
+                        <p class="about-text">
+                            Through an integrated digital system, the platform provides easy access to important services such as document processing, administrative requests, and information management.
+                        </p>
+                        <p class="about-text">
+                            The portal acts as a centralized hub where users can access services, track requests, and interact with various administrative modules in a streamlined and user-friendly environment.
+                        </p>
+                        <p class="about-text font-semibold text-gray-700 mt-6 pt-6 border-t border-gray-200">
+                            Select a portal from the menu to access the available services and resources.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Right Column - Login CTA -->
+                <div class="col-span-7 fade-in flex flex-col justify-center">
+                    <div class="text-center py-12 px-8 bg-gradient-to-br from-gray-50 to-gray-100 rounded-16 border border-gray-200">
+                        <i class="fas fa-lock text-5xl text-emerald-600 mb-6 inline-block"></i>
+                        <h2 class="text-3xl font-bold text-gray-900 mb-4">Access Your Portal</h2>
+                        <p class="text-gray-600 mb-8 text-lg">
+                            Log in to access the complete E-Office system. Multiple portals are available based on your role.
+                        </p>
+                        <button class="login-btn text-lg px-8 py-3 inline-block">
+                            <i class="fas fa-arrow-right mr-2"></i>Login Now
+                        </button>
+                        <p class="text-sm text-gray-500 mt-6">
+                            Default password for demo accounts: <code class="bg-white px-2 py-1 rounded text-emerald-600 font-mono">password123</code>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Overlay -->
+    <div class="overlay" id="overlay"></div>
+
+    <!-- Sidebar - Login Portals -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h3 class="text-xl font-bold text-gray-900">Login Portals</h3>
+            <button class="close-btn" id="closeBtn">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <div class="p-6 space-y-4">
+            <!-- Student Portal -->
+            <a href="public/index.php?action=login" class="portal-card group" onclick="localStorage.setItem('selectedRole', 'student');">
+                <div class="portal-icon icon-student">
+                    <i class="fas fa-graduation-cap"></i>
+                </div>
+                <h4 class="font-semibold text-gray-900 mb-1">Student Portal</h4>
+                <p class="text-sm text-gray-600">Access your academic records</p>
+            </a>
+
+            <!-- Faculty Portal -->
+            <a href="public/index.php?action=login" class="portal-card group" onclick="localStorage.setItem('selectedRole', 'teacher');">
+                <div class="portal-icon icon-faculty">
+                    <i class="fas fa-chalkboard-user"></i>
+                </div>
+                <h4 class="font-semibold text-gray-900 mb-1">Faculty Portal</h4>
+                <p class="text-sm text-gray-600">Faculty management system</p>
+            </a>
+
+            <!-- Admin Portal -->
+            <a href="public/index.php?action=login" class="portal-card group" onclick="localStorage.setItem('selectedRole', 'admin');">
+                <div class="portal-icon icon-admin">
+                    <i class="fas fa-users-cog"></i>
+                </div>
+                <h4 class="font-semibold text-gray-900 mb-1">Admin Portal</h4>
+                <p class="text-sm text-gray-600">Administrative dashboard</p>
+            </a>
+
+            <!-- Principal Portal -->
+            <a href="public/index.php?action=login" class="portal-card group" onclick="localStorage.setItem('selectedRole', 'principal');">
+                <div class="portal-icon icon-research">
+                    <i class="fas fa-user-tie"></i>
+                </div>
+                <h4 class="font-semibold text-gray-900 mb-1">Principal Portal</h4>
+                <p class="text-sm text-gray-600">Leadership dashboard</p>
+            </a>
+
+            <!-- HOD Portal -->
+            <a href="public/index.php?action=login" class="portal-card group" onclick="localStorage.setItem('selectedRole', 'hod');">
+                <div class="portal-icon icon-alumni">
+                    <i class="fas fa-sitemap"></i>
+                </div>
+                <h4 class="font-semibold text-gray-900 mb-1">HOD Portal</h4>
+                <p class="text-sm text-gray-600">Department management</p>
+            </a>
+
+            <!-- Parent Portal -->
+            <a href="public/index.php?action=login" class="portal-card group" onclick="localStorage.setItem('selectedRole', 'parent');">
+                <div class="portal-icon icon-parent">
+                    <i class="fas fa-heart"></i>
+                </div>
+                <h4 class="font-semibold text-gray-900 mb-1">Parent Portal</h4>
+                <p class="text-sm text-gray-600">Track your ward's progress</p>
+            </a>
+
+            <!-- Alumni Portal -->
+            <a href="public/index.php?action=login" class="portal-card group" onclick="localStorage.setItem('selectedRole', 'alumni');">
+                <div class="portal-icon icon-cloud">
+                    <i class="fas fa-network-wired"></i>
+                </div>
+                <h4 class="font-semibold text-gray-900 mb-1">Alumni Portal</h4>
+                <p class="text-sm text-gray-600">Connect, share, inspire</p>
+            </a>
+
+            <!-- Research Portal -->
+            <a href="public/index.php?action=login" class="portal-card group" onclick="localStorage.setItem('selectedRole', 'research');">
+                <div class="portal-icon icon-research">
+                    <i class="fas fa-flask-vial"></i>
+                </div>
+                <h4 class="font-semibold text-gray-900 mb-1">Research Portal</h4>
+                <p class="text-sm text-gray-600">Research portal access</p>
+            </a>
+
+            <!-- Private Cloud -->
+            <a href="public/index.php?action=login" class="portal-card group" onclick="localStorage.setItem('selectedRole', 'cloud');">
+                <div class="portal-icon icon-cloud">
+                    <i class="fas fa-cloud"></i>
+                </div>
+                <h4 class="font-semibold text-gray-900 mb-1">Private Cloud</h4>
+                <p class="text-sm text-gray-600">Access to all databases and resources</p>
+            </a>
+        </div>
+    </aside>
+
+    <script>
+        // Get elements
+        const loginBtn = document.getElementById('loginBtn');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('overlay');
+        const closeBtn = document.getElementById('closeBtn');
+
+        // Open sidebar
+        loginBtn.addEventListener('click', () => {
+            sidebar.classList.add('active');
+            overlay.classList.add('active');
+        });
+
+        // Close sidebar
+        closeBtn.addEventListener('click', closeSidebar);
+        overlay.addEventListener('click', closeSidebar);
+
+        function closeSidebar() {
+            sidebar.classList.remove('active');
+            overlay.classList.remove('active');
+        }
+
+        // Close sidebar when clicking on a portal link
+        document.querySelectorAll('.portal-card').forEach(card => {
+            card.addEventListener('click', () => {
+                closeSidebar();
+            });
+        });
+
+        // Handle Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeSidebar();
+            }
+        });
+    </script>
+</body>
+
+</html>
