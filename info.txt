@@ -1,0 +1,56 @@
+Install XAMPP (or any Apache + MySQL server).
+Copy the project folder into:
+
+xampp/htdocs/
+
+Start:
+	Apache
+	MySQL
+	from XAMPP Control Panel.
+
+Open phpMyAdmin:
+	http://localhost/phpmyadmin
+	Create a new database (example: notice_system).
+	Import the file:
+
+	setup.sql
+	into the created database.
+Open:
+	config/db.php
+
+and configure your database credentials:
+
+$host = "localhost";
+$username = "root";
+$password = "";
+$database = "notice_system";
+
+Run the project in browser:
+
+	http://localhost/your-project-folder/public
+
+Default Login Credentials
+
+All users have the same password : password123
+
+👤 Super Admin
+Username: superadmin
+Password: password123
+
+👤 Admin
+Username: admin
+Password: password123
+
+👤 Teacher
+Username: teacher
+Password: password123
+
+👤 Student
+Username: student
+Password: password123
+
+✅ Workflow Summary
+
+Super Admin → Admin Approval → Teacher Publishing → Student Viewing
+
+Rejected notices are returned with feedback and can be resubmitted.
