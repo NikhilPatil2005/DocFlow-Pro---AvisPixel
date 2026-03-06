@@ -252,6 +252,30 @@ class User
         return $count;
     }
 
+    public function updateProfile($userId, $fullName, $email, $departmentId, $designation)
+    {
+        $userId = (int) $userId;
+        $fullName = sanitize($fullName);
+        $email = sanitize($email);
+        $designation = sanitize($designation);
+        $departmentId = $departmentId ? (int) $departmentId : "NULL";
+
+        // Check for duplicate email
+        $check = $this->conn->query("SELECT id FROM users WHERE email = '$email' AND id != $userId");
+        if ($check && $check->num_rows > 0)
+            return 'email_taken';
+
+        $sql = "UPDATE users SET full_name = '$fullName', email = '$email', department_id = $departmentId, designation = '$designation' WHERE id = $userId";
+        return $this->conn->query($sql) ? true : false;
+    }
+
+    public function updatePassword($userId, $newHashedPassword)
+    {
+        $userId = (int) $userId;
+        $sql = "UPDATE users SET password = '$newHashedPassword' WHERE id = $userId";
+        return $this->conn->query($sql);
+    }
+
     public function getAllDepartments()
     {
         $sql = "SELECT * FROM departments ORDER BY name";

@@ -9,6 +9,8 @@ require_once __DIR__ . '/../src/Controllers/NoticeController.php';
 require_once __DIR__ . '/../src/Controllers/ApprovalController.php';
 require_once __DIR__ . '/../src/Controllers/UserController.php';
 require_once __DIR__ . '/../src/Controllers/LeaveController.php';
+require_once __DIR__ . '/../src/Controllers/SalaryCertificateController.php';
+require_once __DIR__ . '/../src/Controllers/ProfileController.php';
 
 $action = $_GET['action'] ?? 'login';
 
@@ -18,6 +20,8 @@ $noticeController = new NoticeController($conn);
 $approvalController = new ApprovalController($conn);
 $userController = new UserController($conn);
 $leaveController = new LeaveController($conn);
+$salaryController = new SalaryCertificateController($conn);
+$profileController = new ProfileController($conn);
 
 switch ($action) {
     case 'login':
@@ -93,6 +97,29 @@ switch ($action) {
         $leaveController->myHistory();
         break;
 
+    // Salary Certificate System
+    case 'apply_salary':
+        $salaryController->apply();
+        break;
+    case 'my_salary_certificates':
+        $salaryController->myCertificates();
+        break;
+    case 'manage_salary_requests':
+        $salaryController->manage();
+        break;
+    case 'view_salary_request':
+        $salaryController->viewRequest();
+        break;
+    case 'approve_salary_request':
+        $salaryController->approve();
+        break;
+    case 'reject_salary_request':
+        $salaryController->reject();
+        break;
+    case 'print_salary_certificate':
+        $salaryController->printCertificate();
+        break;
+
     // User Approvals
     case 'approve_user':
         $approvalController->approve();
@@ -112,6 +139,17 @@ switch ($action) {
         $notifModel = new Notification($conn);
         $notifModel->markAsRead(currentUser());
         redirect('index.php?action=notifications');
+        break;
+
+    // Profile Management
+    case 'profile':
+        $profileController->index();
+        break;
+    case 'update_profile':
+        $profileController->updateProfile();
+        break;
+    case 'update_password':
+        $profileController->updatePassword();
         break;
 
     // Dedicated Pages
