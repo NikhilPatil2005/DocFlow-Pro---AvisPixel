@@ -35,20 +35,19 @@
                         <div class="text-right">
                             <span class="text-xs font-semibold inline-block text-indigo-600">
                                 <?php
-                                $percentage = 0;
-                                if ($userStatus === 'active')
+                                if ($userStatus === 'active') {
                                     $percentage = 100;
-                                elseif ($userStatus === 'pending_admin') {
-                                    $statusMessage = 'Awaiting Admin Approval';
-                                    $statusColor = 'text-indigo-600 bg-indigo-50 border-indigo-200';
-                                    $icon = '<svg class="w-12 h-12 text-indigo-500 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>';
-                                    $percentage = 75; // 3/4 steps done
-                                } elseif ($userStatus === 'pending_admin')
-                                    $percentage = 50;
-                                elseif ($userStatus === 'pending_teacher')
-                                    $percentage = 25;
-                                elseif ($userStatus === 'rejected')
-                                    $percentage = 0; // Or handling differently
+                                } elseif ($userStatus === 'pending_admin') {
+                                    $percentage = 80;
+                                } elseif ($userStatus === 'pending_principal') {
+                                    $percentage = 60;
+                                } elseif ($userStatus === 'pending_hod') {
+                                    $percentage = 40;
+                                } elseif ($userStatus === 'pending_teacher') {
+                                    $percentage = 20;
+                                } elseif ($userStatus === 'rejected') {
+                                    $percentage = 0;
+                                }
                                 echo $percentage . '%';
                                 ?>
                             </span>
@@ -62,18 +61,11 @@
 
                     <!-- Timeline Steps -->
                     <div class="flex justify-between text-xs text-center">
-                        <?php if ($role === 'student'): ?>
-                            <div class="<?php echo ($userStatus == 'pending_teacher' || $percentage >= 25) ? 'text-indigo-600 font-bold' : 'text-gray-400'; ?>">
-                                Teacher Review</div>
-                            <div class="<?php echo ($userStatus == 'pending_admin' || $percentage >= 50) ? 'text-indigo-600 font-bold' : 'text-gray-400'; ?>">
-                                Admin Review</div>
-                        <?php elseif ($role === 'teacher'): ?>
-                            <div class="<?php echo ($userStatus == 'pending_teacher' || $percentage >= 25) ? 'text-gray-400 hidden' : 'text-gray-400 hidden'; ?>">
-                                NA</div>
-                            <div class="<?php echo ($userStatus == 'pending_admin' || $percentage >= 50) ? 'text-indigo-600 font-bold' : 'text-gray-400'; ?>">
-                                Admin Review</div>
-                        <?php endif; ?>
-                        <div class="<?php echo ($userStatus == 'active') ? 'text-green-600 font-bold' : 'text-gray-400'; ?>">
+                        <div class="text-indigo-600 font-bold">Submitted</div>
+                        <div class="<?php echo ($percentage >= 50) ? 'text-indigo-600 font-bold' : 'text-gray-400'; ?>">In
+                            Review</div>
+                        <div
+                            class="<?php echo ($userStatus == 'active') ? 'text-green-600 font-bold' : 'text-gray-400'; ?>">
                             Active</div>
                     </div>
 

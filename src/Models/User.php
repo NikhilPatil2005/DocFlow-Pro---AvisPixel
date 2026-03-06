@@ -238,9 +238,9 @@ class User
         // For sidebar badges
         $count = 0;
         if ($role === 'admin') {
-            $sql = "SELECT COUNT(*) as count FROM notices WHERE status = 'pending_admin'";
+            $sql = "SELECT COUNT(*) as count FROM notices WHERE status = 'pending_principal'";
         } elseif ($role === 'teacher') {
-            $sql = "SELECT COUNT(*) as count FROM notices WHERE status = 'admin_approved'";
+            $sql = "SELECT COUNT(*) as count FROM notices WHERE status = 'principal_approved'";
         } else {
             return 0;
         }

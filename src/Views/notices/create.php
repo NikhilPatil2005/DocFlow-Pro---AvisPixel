@@ -9,8 +9,8 @@
                 <?php echo $error; ?>
             </p>
         </div>
-    <?php
-endif; ?>
+        <?php
+    endif; ?>
 
     <form action="index.php?action=create_notice" method="POST" class="space-y-6">
         <div>
@@ -21,7 +21,8 @@ endif; ?>
 
         <div>
             <label for="priority" class="block text-sm font-medium text-gray-700">Priority</label>
-            <select name="priority" id="priority" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary sm:text-sm">
+            <select name="priority" id="priority"
+                class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary sm:text-sm">
                 <option value="Low">Low</option>
                 <option value="Medium">Medium</option>
                 <option value="High">High</option>
@@ -35,7 +36,7 @@ endif; ?>
         </div>
 
         <div class="flex justify-end space-x-3">
-            <a href="index.php?action=super_admin_dashboard"
+            <a href="index.php?action=admin_dashboard"
                 class="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                 Cancel
             </a>

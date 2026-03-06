@@ -37,17 +37,17 @@ class DashboardController
     {
         requireLogin();
         $role = $_SESSION['role'];
-        requireRole(['admin', 'teacher']);
+        requireRole(['principal', 'teacher']);
 
         require_once __DIR__ . '/../Models/Notice.php';
         global $conn;
         $noticeModel = new Notice($conn);
 
         $notices = [];
-        if ($role === 'admin') {
-            $notices = $noticeModel->getAllByStatus('pending_admin');
+        if ($role === 'principal') {
+            $notices = $noticeModel->getAllByStatus('pending_principal');
         } elseif ($role === 'teacher') {
-            $notices = $noticeModel->getAllByStatus('admin_approved');
+            $notices = $noticeModel->getAllByStatus('principal_approved');
         }
 
         view('dashboard/notice_approvals', ['notices' => $notices]);
@@ -63,29 +63,29 @@ class DashboardController
         $noticeModel = new Notice($conn);
         $counts = $noticeModel->getCountsByStatus();
 
-        view('dashboard/super_admin', ['counts' => $counts]); // Reusing the super_admin view for now
+        view('dashboard/admin', ['counts' => $counts]);
     }
 
     public function principal()
     {
         requireLogin();
         requireRole(['principal']);
-        
+
         require_once __DIR__ . '/../Models/Leave.php';
         require_once __DIR__ . '/../Models/User.php';
         global $conn;
-        
+
         $leaveModel = new Leave($conn);
         $userModel = new User($conn);
-        
+
         // Get pending leave counts
         $pendingLeavesCount = 0;
         $pendingLeaves = $leaveModel->getPendingLeavesForPrincipal();
         $pendingLeavesCount = count($pendingLeaves);
-        
+
         // Get pending registrations count
         $pendingRegCount = $userModel->getPendingCount('principal');
-        
+
         view('dashboard/principal', [
             'pendingLeavesCount' => $pendingLeavesCount,
             'pendingRegCount' => $pendingRegCount,
@@ -97,18 +97,18 @@ class DashboardController
     {
         requireLogin();
         requireRole(['hod']);
-        
+
         require_once __DIR__ . '/../Models/Leave.php';
         require_once __DIR__ . '/../Models/User.php';
         global $conn;
-        
+
         $leaveModel = new Leave($conn);
         $userModel = new User($conn);
-        
+
         // Get HOD's department
         $userInfo = $userModel->getUserById($_SESSION['user_id']);
         $deptId = $userInfo['department_id'];
-        
+
         // Get pending leave counts for HOD
         $pendingLeavesCount = 0;
         $pendingLeaves = [];
@@ -116,10 +116,10 @@ class DashboardController
             $pendingLeaves = $leaveModel->getPendingLeavesForHOD($deptId);
             $pendingLeavesCount = count($pendingLeaves);
         }
-        
+
         // Get pending registrations count
         $pendingRegCount = $userModel->getPendingCount('hod');
-        
+
         view('dashboard/hod', [
             'pendingLeavesCount' => $pendingLeavesCount,
             'pendingRegCount' => $pendingRegCount,

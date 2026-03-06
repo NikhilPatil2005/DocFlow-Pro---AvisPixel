@@ -16,7 +16,7 @@ class Notice
         $priority = sanitize($priority);
         $createdBy = (int) $createdBy;
 
-        $sql = "INSERT INTO notices (title, content, created_by, status, priority) VALUES ('$title', '$content', $createdBy, 'pending_admin', '$priority')";
+        $sql = "INSERT INTO notices (title, content, created_by, status, priority) VALUES ('$title', '$content', $createdBy, 'pending_principal', '$priority')";
 
         if ($this->conn->query($sql)) {
             return $this->conn->insert_id;

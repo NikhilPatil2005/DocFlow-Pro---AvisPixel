@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -30,6 +31,7 @@
                 opacity: 0;
                 transform: translateY(30px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -187,7 +189,8 @@
         <!-- === PORTALS LIST VIEW === -->
         <div id="portals-view">
             <!-- Header -->
-            <div class="p-6 border-b border-gray-100 flex items-center space-x-4 bg-gradient-to-r from-emerald-50 to-white">
+            <div
+                class="p-6 border-b border-gray-100 flex items-center space-x-4 bg-gradient-to-r from-emerald-50 to-white">
                 <div class="bg-gradient-to-br from-emerald-500 to-emerald-600 p-3 rounded-xl text-white shadow-lg">
                     <i class="fas fa-door-open text-lg"></i>
                 </div>
@@ -201,7 +204,8 @@
             <div class="p-4 sm:p-6 max-h-[65vh] overflow-y-auto custom-scrollbar space-y-3">
 
                 <!-- Student Portal -->
-                <button onclick="showLogin('student', 'Student Portal')" class="portal-btn w-full text-left flex items-center p-4 rounded-xl transition-all bg-white">
+                <button onclick="showLogin('student', 'Student Portal')"
+                    class="portal-btn w-full text-left flex items-center p-4 rounded-xl transition-all bg-white">
                     <div class="portal-icon icon-orange">
                         <i class="fas fa-graduation-cap"></i>
                     </div>
@@ -213,7 +217,8 @@
                 </button>
 
                 <!-- Faculty Portal (Teacher) -->
-                <button onclick="showLogin('teacher', 'Faculty Portal')" class="portal-btn w-full text-left flex items-center p-4 rounded-xl transition-all bg-white">
+                <button onclick="showLogin('teacher', 'Faculty Portal')"
+                    class="portal-btn w-full text-left flex items-center p-4 rounded-xl transition-all bg-white">
                     <div class="portal-icon icon-indigo">
                         <i class="fas fa-chalkboard-user"></i>
                     </div>
@@ -225,14 +230,16 @@
                 </button>
 
                 <!-- HOD Portal -->
-                <button onclick="showLogin('hod', 'HOD Portal')" class="portal-btn w-full text-left flex items-center p-4 rounded-xl transition-all bg-white">
+                <button onclick="showLogin('hod', 'HOD Portal')"
+                    class="portal-btn w-full text-left flex items-center p-4 rounded-xl transition-all bg-white">
                     <div class="portal-icon icon-emerald">
                         <i class="fas fa-sitemap"></i>
                     </div>
                     <div class="ml-4 flex-1">
                         <div class="flex items-center space-x-2">
                             <h2 class="text-gray-900 font-semibold text-base">HOD Portal</h2>
-                            <span class="bg-emerald-100 text-emerald-700 text-xs font-medium px-2 py-0.5 rounded">Department</span>
+                            <span
+                                class="bg-emerald-100 text-emerald-700 text-xs font-medium px-2 py-0.5 rounded">Department</span>
                         </div>
                         <p class="text-gray-600 text-sm">Department approvals & management</p>
                     </div>
@@ -240,14 +247,16 @@
                 </button>
 
                 <!-- Principal Portal -->
-                <button onclick="showLogin('principal', 'Principal Portal')" class="portal-btn w-full text-left flex items-center p-4 rounded-xl transition-all bg-white">
+                <button onclick="showLogin('principal', 'Principal Portal')"
+                    class="portal-btn w-full text-left flex items-center p-4 rounded-xl transition-all bg-white">
                     <div class="portal-icon icon-purple">
                         <i class="fas fa-user-tie"></i>
                     </div>
                     <div class="ml-4 flex-1">
                         <div class="flex items-center space-x-2">
                             <h2 class="text-gray-900 font-semibold text-base">Principal Portal</h2>
-                            <span class="bg-purple-100 text-purple-700 text-xs font-medium px-2 py-0.5 rounded">Executive</span>
+                            <span
+                                class="bg-purple-100 text-purple-700 text-xs font-medium px-2 py-0.5 rounded">Executive</span>
                         </div>
                         <p class="text-gray-600 text-sm">Leadership & final approvals</p>
                     </div>
@@ -255,14 +264,16 @@
                 </button>
 
                 <!-- Admin Portal -->
-                <button onclick="showLogin('admin', 'Admin Portal')" class="portal-btn w-full text-left flex items-center p-4 rounded-xl transition-all bg-white">
+                <button onclick="showLogin('admin', 'Admin Portal')"
+                    class="portal-btn w-full text-left flex items-center p-4 rounded-xl transition-all bg-white">
                     <div class="portal-icon icon-cyan">
                         <i class="fas fa-cogs"></i>
                     </div>
                     <div class="ml-4 flex-1">
                         <div class="flex items-center space-x-2">
                             <h2 class="text-gray-900 font-semibold text-base">Admin Portal</h2>
-                            <span class="bg-cyan-100 text-cyan-700 text-xs font-medium px-2 py-0.5 rounded">System</span>
+                            <span
+                                class="bg-cyan-100 text-cyan-700 text-xs font-medium px-2 py-0.5 rounded">System</span>
                         </div>
                         <p class="text-gray-600 text-sm">System administration</p>
                     </div>
@@ -272,7 +283,8 @@
                 <!-- Coming Soon Portals -->
 
                 <!-- Parent Portal -->
-                <button onclick="event.preventDefault()" class="portal-btn w-full text-left flex items-center p-4 rounded-xl cursor-not-allowed bg-white opacity-60">
+                <button onclick="event.preventDefault()"
+                    class="portal-btn w-full text-left flex items-center p-4 rounded-xl cursor-not-allowed bg-white opacity-60">
                     <div class="portal-icon icon-pink">
                         <i class="fas fa-heart"></i>
                     </div>
@@ -284,14 +296,16 @@
                 </button>
 
                 <!-- Alumni Portal -->
-                <button onclick="event.preventDefault()" class="portal-btn w-full text-left flex items-center p-4 rounded-xl cursor-not-allowed bg-white opacity-60">
+                <button onclick="event.preventDefault()"
+                    class="portal-btn w-full text-left flex items-center p-4 rounded-xl cursor-not-allowed bg-white opacity-60">
                     <div class="portal-icon icon-sky">
                         <i class="fas fa-network-wired"></i>
                     </div>
                     <div class="ml-4 flex-1">
                         <div class="flex items-center space-x-2">
                             <h2 class="text-gray-900 font-semibold text-base">Alumni Portal</h2>
-                            <span class="bg-gray-100 text-gray-700 text-xs font-medium px-2 py-0.5 rounded">Coming Soon</span>
+                            <span class="bg-gray-100 text-gray-700 text-xs font-medium px-2 py-0.5 rounded">Coming
+                                Soon</span>
                         </div>
                         <p class="text-gray-600 text-sm">Connect and share with alumni</p>
                     </div>
@@ -299,14 +313,16 @@
                 </button>
 
                 <!-- IRINS Portal -->
-                <button onclick="event.preventDefault()" class="portal-btn w-full text-left flex items-center p-4 rounded-xl cursor-not-allowed bg-white opacity-60">
+                <button onclick="event.preventDefault()"
+                    class="portal-btn w-full text-left flex items-center p-4 rounded-xl cursor-not-allowed bg-white opacity-60">
                     <div class="portal-icon icon-rose">
                         <i class="fas fa-book"></i>
                     </div>
                     <div class="ml-4 flex-1">
                         <div class="flex items-center space-x-2">
                             <h2 class="text-gray-900 font-semibold text-base">IRINS</h2>
-                            <span class="bg-gray-100 text-gray-700 text-xs font-medium px-2 py-0.5 rounded">External</span>
+                            <span
+                                class="bg-gray-100 text-gray-700 text-xs font-medium px-2 py-0.5 rounded">External</span>
                         </div>
                         <p class="text-gray-600 text-sm">Research portal access</p>
                     </div>
@@ -314,14 +330,16 @@
                 </button>
 
                 <!-- Private Cloud Portal -->
-                <button onclick="event.preventDefault()" class="portal-btn w-full text-left flex items-center p-4 rounded-xl cursor-not-allowed bg-white opacity-60">
+                <button onclick="event.preventDefault()"
+                    class="portal-btn w-full text-left flex items-center p-4 rounded-xl cursor-not-allowed bg-white opacity-60">
                     <div class="portal-icon icon-slate">
                         <i class="fas fa-cloud"></i>
                     </div>
                     <div class="ml-4 flex-1">
                         <div class="flex items-center space-x-2">
                             <h2 class="text-gray-900 font-semibold text-base">Private Cloud</h2>
-                            <span class="bg-gray-100 text-gray-700 text-xs font-medium px-2 py-0.5 rounded">External</span>
+                            <span
+                                class="bg-gray-100 text-gray-700 text-xs font-medium px-2 py-0.5 rounded">External</span>
                         </div>
                         <p class="text-gray-600 text-sm truncate">Access databases & resources</p>
                     </div>
@@ -333,9 +351,10 @@
 
         <!-- === ACTUAL LOGIN FORM VIEW === -->
         <div id="login-view" class="hidden-view p-6 sm:p-8">
-            <button onclick="showPortals()" class="mb-6 flex items-center text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">
+            <a href="../index.html" onclick="localStorage.removeItem('selectedRole');"
+                class="mb-6 inline-flex items-center text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">
                 <i class="fas fa-arrow-left mr-2 text-emerald-600"></i>Back to Portals
-            </button>
+            </a>
 
             <div class="mb-8">
                 <h2 id="login-title" class="text-2xl font-bold text-gray-900">Sign In</h2>
@@ -349,18 +368,19 @@
                 <!-- Username Field -->
                 <div>
                     <label for="username" class="block text-sm font-medium text-gray-700 mb-2">Username</label>
-                    <input type="text" name="username" id="username" required autocomplete="username" placeholder="Enter your username"
-                        class="modern-input w-full text-sm">
+                    <input type="text" name="username" id="username" required autocomplete="username"
+                        placeholder="Enter your username" class="modern-input w-full text-sm">
                 </div>
 
                 <!-- Password Field -->
                 <div>
                     <div class="flex items-center justify-between mb-2">
                         <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
-                        <a href="index.php?action=check_status" class="text-xs font-medium text-emerald-600 hover:text-emerald-700">Check registration?</a>
+                        <a href="index.php?action=check_status"
+                            class="text-xs font-medium text-emerald-600 hover:text-emerald-700">Check registration?</a>
                     </div>
-                    <input type="password" name="password" id="password" required autocomplete="current-password" placeholder="Enter your password"
-                        class="modern-input w-full text-sm">
+                    <input type="password" name="password" id="password" required autocomplete="current-password"
+                        placeholder="Enter your password" class="modern-input w-full text-sm">
                 </div>
 
                 <!-- Submit Button -->
@@ -371,7 +391,8 @@
 
             <!-- Footer Link -->
             <div class="mt-6 text-center text-sm text-gray-600 border-t border-gray-200 pt-6">
-                New here? <a href="index.php?action=register" class="font-medium text-emerald-600 hover:text-emerald-700">Create account</a>
+                New here? <a href="index.php?action=register"
+                    class="font-medium text-emerald-600 hover:text-emerald-700">Create account</a>
             </div>
         </div>
 
@@ -379,34 +400,42 @@
 
     <!-- JavaScript -->
     <script>
+        const titleMap = {
+            'student': 'Student Portal',
+            'teacher': 'Faculty Portal',
+            'hod': 'HOD Portal',
+            'principal': 'Principal Portal',
+            'admin': 'Admin Portal',
+            'parent': 'Parent Portal',
+            'alumni': 'Alumni Portal',
+            'research': 'Research Portal',
+            'cloud': 'Private Cloud'
+        };
+
         function showLogin(role, title) {
             document.getElementById('portals-view').classList.add('hidden-view');
             document.getElementById('login-view').classList.remove('hidden-view');
             document.getElementById('role-input').value = role;
             document.getElementById('login-title').innerText = 'Sign in to ' + title;
             document.getElementById('username').focus();
+            localStorage.setItem('selectedRole', role); // Save preference
         }
 
         function showPortals() {
             document.getElementById('login-view').classList.add('hidden-view');
             document.getElementById('portals-view').classList.remove('hidden-view');
+            localStorage.removeItem('selectedRole'); // Clear on back
         }
 
-        // Auto-show login form if there was an error
+        // Auto-show login form if there was an error, else check localStorage
         <?php if (isset($error) && isset($_POST['role'])): ?>
             let attemptedRole = <?php echo json_encode($_POST['role']); ?>;
-            let titleMap = {
-                'student': 'Student Portal',
-                'teacher': 'Faculty Portal',
-                'hod': 'HOD Portal',
-                'principal': 'Principal Portal',
-                'admin': 'Admin Portal',
-                'parent': 'Parent Portal',
-                'alumni': 'Alumni Portal',
-                'irins': 'IRINS',
-                'cloud': 'Private Cloud'
-            };
             showLogin(attemptedRole, titleMap[attemptedRole] || 'Portal');
+        <?php else: ?>
+            let savedRole = localStorage.getItem('selectedRole');
+            if (savedRole && titleMap[savedRole]) {
+                showLogin(savedRole, titleMap[savedRole]);
+            }
         <?php endif; ?>
     </script>
 </body>

@@ -30,13 +30,13 @@ class NoticeController
             case 'notice_created':
                 $this->notifModel->createForRole('admin', "New Notice Created: #$noticeId");
                 break;
-            case 'admin_approved':
-                $this->notifModel->createForRole('teacher', "Notice Approved by Admin: #$noticeId");
+            case 'principal_approved':
+                $this->notifModel->createForRole('teacher', "Notice Approved by Principal: #$noticeId");
                 break;
-            case 'admin_rejected':
+            case 'principal_rejected':
                 $notice = $this->noticeModel->getById($noticeId);
                 if ($notice) {
-                    $this->notifModel->create($notice['created_by'], "Notice Rejected by Admin: #$noticeId. Reason: $details");
+                    $this->notifModel->create($notice['created_by'], "Notice Rejected by Principal: #$noticeId. Reason: $details");
                 }
                 break;
             case 'teacher_published':
@@ -77,12 +77,12 @@ class NoticeController
     public function approve()
     {
         requireLogin();
-        requireRole(['admin']);
+        requireRole(['principal']);
 
         $id = $_GET['id'] ?? null;
         if ($id) {
-            $this->noticeModel->updateStatus($id, 'admin_approved');
-            $this->logAndNotify($id, 'admin_approved', 'pending_admin', 'admin_approved');
+            $this->noticeModel->updateStatus($id, 'principal_approved');
+            $this->logAndNotify($id, 'principal_approved', 'pending_principal', 'principal_approved');
             redirect('index.php?action=notice_approvals&success=Notice approved successfully');
         }
     }
@@ -101,11 +101,11 @@ class NoticeController
         $oldStatus = '';
         $targetStatus = '';
 
-        if ($role === 'admin') {
-            $oldStatus = 'pending_admin';
-            $targetStatus = 'admin_rejected';
+        if ($role === 'principal') {
+            $oldStatus = 'pending_principal';
+            $targetStatus = 'principal_rejected';
         } elseif ($role === 'teacher') {
-            $oldStatus = 'admin_approved';
+            $oldStatus = 'principal_approved';
             $targetStatus = 'teacher_rejected';
         } else {
             die("Unauthorized");
@@ -124,7 +124,7 @@ class NoticeController
 
         $id = $_GET['id'] ?? null;
         if ($id && $this->noticeModel->updateStatus($id, 'teacher_published')) {
-            $this->logAndNotify($id, 'teacher_published', 'admin_approved', 'teacher_published');
+            $this->logAndNotify($id, 'teacher_published', 'principal_approved', 'teacher_published');
             redirect('index.php?action=notice_approvals&success=Notice published successfully');
         }
     }
@@ -142,7 +142,7 @@ class NoticeController
 
         if (!$notice)
             die("Notice not found");
-        if ($notice['status'] !== 'admin_rejected')
+        if ($notice['status'] !== 'principal_rejected')
             die("Only rejected notices can be edited.");
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -152,7 +152,7 @@ class NoticeController
 
             if ($this->noticeModel->update($id, $title, $content, $priority)) {
                 $this->noticeModel->updateStatus($id, 'pending_principal');
-                $this->logAndNotify($id, 'notice_resubmitted', 'admin_rejected', 'pending_principal');
+                $this->logAndNotify($id, 'notice_resubmitted', 'principal_rejected', 'pending_principal');
                 redirect('index.php?action=admin_dashboard');
             }
         } else {
@@ -181,9 +181,9 @@ class NoticeController
         $canView = false;
         if ($role === 'admin')
             $canView = true;
-        if ($role === 'admin' && in_array($notice['status'], ['pending_admin', 'admin_approved', 'teacher_published', 'teacher_rejected', 'admin_rejected']))
+        if ($role === 'principal' && in_array($notice['status'], ['pending_principal', 'principal_approved', 'teacher_published', 'teacher_rejected', 'principal_rejected']))
             $canView = true;
-        if ($role === 'teacher' && in_array($notice['status'], ['admin_approved', 'teacher_published', 'teacher_rejected']))
+        if ($role === 'teacher' && in_array($notice['status'], ['principal_approved', 'teacher_published', 'teacher_rejected']))
             $canView = true;
         if ($role === 'student' && $notice['status'] === 'teacher_published')
             $canView = true;

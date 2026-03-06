@@ -1,480 +1,386 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>E-Office Portal - Digital Administration System</title>
+    <title>E-Office | Digital Administration</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        heading: ['Outfit', 'sans-serif'],
+                    },
+                    colors: {
+                        charcoal: '#1F2933',
+                        softgray: '#F5F7FA',
+                        emerald: {
+                            50: '#ECFDF5',
+                            100: '#D1FAE5',
+                            400: '#34D399',
+                            500: '#10B981',
+                            600: '#059669',
+                        },
+                        amber: {
+                            50: '#FFFBEB',
+                            500: '#F59E0B',
+                            600: '#D97706',
+                        }
+                    },
+                    animation: {
+                        'fade-in-up': 'fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+                    },
+                    keyframes: {
+                        fadeInUp: {
+                            '0%': { opacity: 0, transform: 'translateY(20px)' },
+                            '100%': { opacity: 1, transform: 'translateY(0)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-        * {
-            font-family: 'Inter', sans-serif;
-        }
-
-        body {
-            background-color: #ffffff;
-            color: #374151;
-        }
-
-        /* Smooth transitions */
-        .transition-all {
-            transition: all 0.3s ease;
-        }
-
-        /* Sidebar animation */
-        .sidebar {
-            position: fixed;
-            top: 0;
-            right: -400px;
-            width: 400px;
-            height: 100vh;
-            background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%);
-            box-shadow: -4px 0 20px rgba(0, 0, 0, 0.1);
-            z-index: 50;
-            transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            overflow-y: auto;
-        }
-
-        .sidebar.active {
-            right: 0;
-        }
-
-        .overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0);
-            z-index: 40;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s ease;
-        }
-
-        .overlay.active {
-            background: rgba(0, 0, 0, 0.5);
-            opacity: 1;
-            pointer-events: all;
-        }
-
-        /* Portal card hover effect */
-        .portal-card {
-            background: #ffffff;
-            border: 1px solid #e5e7eb;
-            border-radius: 12px;
-            padding: 20px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .portal-card:hover {
-            border-color: #10b981;
-            box-shadow: 0 8px 24px rgba(16, 185, 129, 0.15);
-            transform: translateY(-2px);
-        }
-
-        .portal-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            margin-bottom: 12px;
-            transition: all 0.3s ease;
-        }
-
-        .portal-card:hover .portal-icon {
-            transform: scale(1.1);
-        }
-
-        /* Hero image styling */
-        .hero-image {
-            background: linear-gradient(135deg, #1F2933 0%, #2d3748 100%);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .hero-image::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600"><defs><pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/></pattern></pattern></defs><rect width="1200" height="600" fill="%231F2933"/><rect width="1200" height="600" fill="url(%23grid)"/></svg>');
-            opacity: 0.5;
-        }
-
-        .hero-content {
-            position: relative;
-            z-index: 10;
-        }
-
-        /* Login button styling */
-        .login-btn {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            color: white;
-            padding: 10px 24px;
-            border-radius: 8px;
-            border: none;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
-        }
-
-        .login-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4);
-        }
-
-        .login-btn:active {
-            transform: translateY(0);
-        }
-
-        /* Section titles */
-        .section-title {
-            font-size: 28px;
-            font-weight: 700;
-            color: #1f2933;
-            margin-bottom: 16px;
-        }
-
-        /* Sidebar header */
-        .sidebar-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px;
-            border-bottom: 1px solid #e5e7eb;
-            background: #ffffff;
-        }
-
-        .close-btn {
-            background: none;
-            border: none;
-            font-size: 24px;
-            cursor: pointer;
-            color: #6b7280;
-            transition: color 0.2s ease;
-        }
-
-        .close-btn:hover {
-            color: #1f2933;
-        }
-
-        /* Custom scrollbar */
-        .sidebar::-webkit-scrollbar {
+        .custom-scrollbar::-webkit-scrollbar {
             width: 6px;
         }
 
-        .sidebar::-webkit-scrollbar-track {
+        .custom-scrollbar::-webkit-scrollbar-track {
             background: transparent;
         }
 
-        .sidebar::-webkit-scrollbar-thumb {
-            background: #d1d5db;
-            border-radius: 3px;
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #E5E7EB;
+            border-radius: 4px;
         }
 
-        .sidebar::-webkit-scrollbar-thumb:hover {
-            background: #9ca3af;
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #D1D5DB;
         }
 
-        /* Responsive */
-        @media (max-width: 768px) {
-            .sidebar {
-                width: 100%;
-                right: -100%;
-            }
-
-            .grid-layout {
-                grid-template-columns: 1fr;
-            }
-
-            .section-title {
-                font-size: 24px;
-            }
+        .delay-100 {
+            animation-delay: 100ms;
         }
 
-        /* About section styling */
-        .about-section {
-            background: #ffffff;
-            padding: 40px;
-            border-radius: 12px;
-            margin-top: 24px;
+        .delay-200 {
+            animation-delay: 200ms;
         }
 
-        .about-text {
-            color: #4b5563;
-            line-height: 1.8;
-            font-size: 15px;
-            margin-bottom: 16px;
+        .delay-300 {
+            animation-delay: 300ms;
         }
 
-        /* Animation for fade-in */
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .fade-in {
-            animation: fadeInUp 0.6s ease-out;
-        }
-
-        /* Color scheme for icons */
-        .icon-admin {
-            background: rgba(16, 185, 129, 0.1);
-            color: #10b981;
-        }
-
-        .icon-student {
-            background: rgba(245, 158, 11, 0.1);
-            color: #f59e0b;
-        }
-
-        .icon-faculty {
-            background: rgba(79, 70, 229, 0.1);
-            color: #4f46e5;
-        }
-
-        .icon-parent {
-            background: rgba(236, 72, 153, 0.1);
-            color: #ec4899;
-        }
-
-        .icon-alumni {
-            background: rgba(59, 130, 246, 0.1);
-            color: #3b82f6;
-        }
-
-        .icon-research {
-            background: rgba(168, 85, 247, 0.1);
-            color: #a855f7;
-        }
-
-        .icon-cloud {
-            background: rgba(14, 165, 233, 0.1);
-            color: #0ea5e9;
+        .glass-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
         }
     </style>
 </head>
 
-<body>
+<body class="bg-softgray text-charcoal antialiased overflow-x-hidden">
+
     <!-- Header -->
-    <header class="bg-white border-b border-gray-200 shadow-sm sticky top-0 z-30">
-        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-lg flex items-center justify-center">
-                    <i class="fas fa-building text-white text-lg"></i>
+    <header
+        class="fixed w-full top-0 z-40 bg-white/80 backdrop-blur-md border-b border-gray-100/60 transition-all duration-300 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between pointer-events-auto">
+            <div class="flex items-center gap-3 group cursor-pointer" onclick="window.scrollTo(0,0)">
+                <div
+                    class="w-10 h-10 rounded-xl bg-charcoal flex items-center justify-center shadow-lg group-hover:rotate-6 transition-transform duration-300">
+                    <i class="fas fa-layer-group text-white text-lg"></i>
                 </div>
-                <h1 class="text-xl font-bold text-gray-900">E-Office</h1>
+                <span class="font-heading font-bold text-2xl text-charcoal tracking-wide">E-Office</span>
             </div>
-            <button class="login-btn" id="loginBtn">
-                <i class="fas fa-sign-in-alt mr-2"></i>Login
+            <button onclick="openSidebar()"
+                class="group flex items-center gap-2 bg-emerald-500 text-white px-6 py-2.5 rounded-full font-medium transition-all duration-300 shadow-[0_4px_14px_0_rgba(16,185,129,0.3)] hover:shadow-[0_6px_20px_rgba(16,185,129,0.4)] hover:-translate-y-0.5 pointer-events-auto">
+                <i class="fas fa-lock text-sm group-hover:scale-110 transition-transform"></i> Login
             </button>
         </div>
     </header>
 
     <!-- Main Content -->
-    <main class="min-h-screen bg-gradient-to-b from-white to-gray-50">
-        <div class="max-w-7xl mx-auto px-6 py-12">
-            <div class="grid grid-cols-12 gap-8 items-stretch grid-layout">
-                <!-- Left Column - Hero Section -->
-                <div class="col-span-5 fade-in">
-                    <!-- Hero Image -->
-                    <div class="hero-image h-80 rounded-16 mb-8 hero-content flex items-end p-8">
-                        <div class="relative z-20">
-                            <div class="inline-block bg-white rounded-lg px-4 py-2 mb-4 shadow-lg">
-                                <span class="text-sm font-semibold text-gray-800">
-                                    <i class="fas fa-file-alt mr-2 text-emerald-600"></i>
-                                    Digital Administration
-                                </span>
+    <main class="min-h-screen pt-20">
+        <!-- Hero Section -->
+        <section class="relative w-full h-[65vh] flex items-center justify-center overflow-hidden">
+            <!-- Background Image -->
+            <div class="absolute inset-0 z-0">
+                <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80"
+                    alt="Office Background" class="w-full h-full object-cover">
+                <!-- Overlay Gradients -->
+                <div class="absolute inset-0 bg-charcoal/70 mix-blend-multiply"></div>
+                <div class="absolute inset-0 bg-gradient-to-t from-softgray via-transparent to-transparent"></div>
+            </div>
+
+            <!-- Hero Content -->
+            <div class="relative z-10 text-center px-4 max-w-4xl mx-auto">
+                <div
+                    class="inline-block px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white/90 text-sm font-medium mb-6 animate-fade-in-up">
+                    <i class="fas fa-star text-amber-400 mr-2 border-r border-white/20 pr-2"></i> Modern Digital
+                    Administration
+                </div>
+                <h1
+                    class="font-heading text-5xl md:text-7xl lg:text-8xl font-bold text-white mb-6 tracking-tight animate-fade-in-up delay-100 leading-tight">
+                    Seamless <span class="text-emerald-400 relative inline-block">Workflow<svg
+                            class="absolute w-full h-3 -bottom-1 left-0 text-emerald-400/30" viewBox="0 0 100 20"
+                            preserveAspectRatio="none">
+                            <path d="M0,10 Q50,20 100,10" stroke="currentColor" stroke-width="8" fill="none" />
+                        </svg></span>
+                </h1>
+                <p
+                    class="text-gray-200 text-lg md:text-xl max-w-2xl mx-auto font-light leading-relaxed animate-fade-in-up delay-200">
+                    A centralized hub to track requests, access resources, and enhance organizational transparency with
+                    style and efficiency.
+                </p>
+                <div class="mt-10 animate-fade-in-up delay-300">
+                    <button onclick="openSidebar()"
+                        class="bg-white text-charcoal px-8 py-3.5 rounded-full font-semibold hover:bg-gray-50 transition-all duration-300 shadow-xl hover:-translate-y-1 hover:shadow-2xl flex items-center justify-center gap-2 mx-auto">
+                        Explore Portals <i class="fas fa-arrow-right text-emerald-500"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section class="relative z-20 max-w-5xl mx-auto px-4 -mt-16 mb-24 pb-12">
+            <div
+                class="glass-card rounded-3xl shadow-[0_20px_40px_-15px_rgba(0,0,0,0.05)] p-8 md:p-12 animate-fade-in-up delay-300">
+                <div class="grid md:grid-cols-12 gap-12 items-center">
+                    <!-- Left: Header & Badges -->
+                    <div class="md:col-span-4">
+                        <div
+                            class="w-14 h-14 rounded-2xl bg-charcoal flex items-center justify-center text-white mb-6 shadow-xl shadow-gray-900/20">
+                            <i class="fas fa-info-circle text-2xl"></i>
+                        </div>
+                        <h2
+                            class="font-heading text-3xl md:text-4xl font-bold text-charcoal leading-tight mb-4 tracking-tight">
+                            About <br><span class="text-emerald-500">E-Office</span>
+                        </h2>
+                        <div class="flex flex-col gap-3 mt-6">
+                            <div
+                                class="flex items-center gap-3 text-sm font-medium text-gray-600 bg-white shadow-sm px-4 py-3 rounded-xl border border-gray-100 hover:-translate-y-0.5 transition-transform duration-200 cursor-default">
+                                <i class="fas fa-check-circle text-emerald-500"></i> Document Handling
                             </div>
-                            <p class="text-white text-lg font-semibold">Secure & Fast</p>
+                            <div
+                                class="flex items-center gap-3 text-sm font-medium text-gray-600 bg-white shadow-sm px-4 py-3 rounded-xl border border-gray-100 hover:-translate-y-0.5 transition-transform duration-200 cursor-default">
+                                <i class="fas fa-check-circle text-amber-500"></i> Workflow Management
+                            </div>
+                            <div
+                                class="flex items-center gap-3 text-sm font-medium text-gray-600 bg-white shadow-sm px-4 py-3 rounded-xl border border-gray-100 hover:-translate-y-0.5 transition-transform duration-200 cursor-default">
+                                <i class="fas fa-check-circle text-charcoal"></i> Enhanced Transparency
+                            </div>
                         </div>
                     </div>
 
-                    <!-- About Section -->
-                    <div class="about-section fade-in">
-                        <h2 class="section-title">About E-Office</h2>
-                        <p class="about-text">
-                            The E-Office platform represents a modern approach to digital administration and workflow management. It simplifies document handling, improves transparency, and enables efficient coordination across departments and users.
-                        </p>
-                        <p class="about-text">
-                            Through an integrated digital system, the platform provides easy access to important services such as document processing, administrative requests, and information management.
-                        </p>
-                        <p class="about-text">
-                            The portal acts as a centralized hub where users can access services, track requests, and interact with various administrative modules in a streamlined and user-friendly environment.
-                        </p>
-                        <p class="about-text font-semibold text-gray-700 mt-6 pt-6 border-t border-gray-200">
-                            Select a portal from the menu to access the available services and resources.
-                        </p>
-                    </div>
-                </div>
+                    <!-- Right: Content -->
+                    <div class="md:col-span-8">
+                        <div class="space-y-6 text-gray-600 text-[1.05rem] leading-relaxed font-light">
+                            <p
+                                class="first-letter:text-5xl first-letter:font-heading first-letter:font-bold first-letter:text-charcoal first-letter:mr-2 first-letter:float-left first-letter:shadow-sm">
+                                The E-Office platform represents a modern approach to digital administration and
+                                workflow management. It simplifies document handling, improves transparency, and enables
+                                efficient coordination across departments and users.
+                            </p>
+                            <p>
+                                Through an integrated digital system, the platform provides easy access to important
+                                services such as document processing, administrative requests, and information
+                                management.
+                            </p>
+                            <p>
+                                The portal acts as a centralized hub where users can access services, track requests,
+                                and interact with various administrative modules in a streamlined and user-friendly
+                                environment.
+                            </p>
 
-                <!-- Right Column - Login CTA -->
-                <div class="col-span-7 fade-in flex flex-col justify-center">
-                    <div class="text-center py-12 px-8 bg-gradient-to-br from-gray-50 to-gray-100 rounded-16 border border-gray-200">
-                        <i class="fas fa-lock text-5xl text-emerald-600 mb-6 inline-block"></i>
-                        <h2 class="text-3xl font-bold text-gray-900 mb-4">Access Your Portal</h2>
-                        <p class="text-gray-600 mb-8 text-lg">
-                            Log in to access the complete E-Office system. Multiple portals are available based on your role.
-                        </p>
-                        <button class="login-btn text-lg px-8 py-3 inline-block">
-                            <i class="fas fa-arrow-right mr-2"></i>Login Now
-                        </button>
-                        <p class="text-sm text-gray-500 mt-6">
-                            Default password for demo accounts: <code class="bg-white px-2 py-1 rounded text-emerald-600 font-mono">password123</code>
-                        </p>
+                            <div class="pt-6 mt-2 border-t border-gray-100">
+                                <p
+                                    class="font-medium text-charcoal italic border-l-4 border-amber-400 pl-4 py-1.5 bg-amber-50/50 rounded-r-lg">
+                                    Select a portal from the menu to access the available services and resources.
+                                </p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </section>
     </main>
 
-    <!-- Overlay -->
-    <div class="overlay" id="overlay"></div>
+    <!-- Sidebar Overlay -->
+    <div id="sidebarOverlay"
+        class="fixed inset-0 bg-charcoal/30 backdrop-blur-sm z-40 opacity-0 pointer-events-none transition-opacity duration-400 ease-in-out">
+    </div>
 
-    <!-- Sidebar - Login Portals -->
-    <aside class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-            <h3 class="text-xl font-bold text-gray-900">Login Portals</h3>
-            <button class="close-btn" id="closeBtn">
-                <i class="fas fa-times"></i>
+    <!-- Sidebar Drawer -->
+    <aside id="sidebar"
+        class="fixed top-0 right-0 h-full w-full max-w-md bg-softgray shadow-[-20px_0_40px_rgba(0,0,0,0.1)] z-50 transform translate-x-full transition-transform duration-500 cubic-bezier(0.16, 1, 0.3, 1) flex flex-col">
+        <!-- Sidebar Header -->
+        <div
+            class="px-6 py-8 bg-white border-b border-gray-100 flex items-center justify-between relative z-10 shrink-0">
+            <div>
+                <h3 class="font-heading text-3xl font-bold text-charcoal tracking-tight">Login Portals</h3>
+                <p class="text-sm text-gray-500 mt-1 font-medium">Select a module to continue</p>
+            </div>
+            <button onclick="closeSidebar()"
+                class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-50 text-gray-400 hover:text-charcoal hover:bg-gray-100 border border-gray-200 transition-all duration-200 active:scale-95">
+                <i class="fas fa-times text-lg"></i>
             </button>
         </div>
 
-        <div class="p-6 space-y-4">
+        <!-- Sidebar Content -->
+        <div class="flex-1 overflow-y-auto p-6 space-y-4 custom-scrollbar relative">
+
             <!-- Student Portal -->
-            <a href="public/index.php?action=login" class="portal-card group" onclick="localStorage.setItem('selectedRole', 'student');">
-                <div class="portal-icon icon-student">
-                    <i class="fas fa-graduation-cap"></i>
+            <a href="public/index.php?action=login" onclick="setRole('student')"
+                class="group flex items-center p-4 bg-white border border-gray-100 rounded-2xl hover:border-amber-400 hover:shadow-[0_8px_20px_-6px_rgba(245,158,11,0.15)] transition-all duration-300 relative overflow-hidden">
+                <div
+                    class="flex-shrink-0 w-12 h-12 rounded-xl bg-amber-50 flex items-center justify-center text-amber-500 group-hover:bg-amber-500 group-hover:text-white transition-all duration-300 z-10">
+                    <i class="fas fa-graduation-cap text-xl"></i>
                 </div>
-                <h4 class="font-semibold text-gray-900 mb-1">Student Portal</h4>
-                <p class="text-sm text-gray-600">Access your academic records</p>
+                <div class="ml-4 flex-1 z-10">
+                    <h4 class="font-heading font-bold text-charcoal text-lg">Student Portal</h4>
+                    <p class="text-sm text-gray-500">Access academic records</p>
+                </div>
+                <i
+                    class="fas fa-chevron-right text-gray-300 group-hover:text-amber-500 group-hover:translate-x-1 transition-all z-10"></i>
             </a>
 
             <!-- Faculty Portal -->
-            <a href="public/index.php?action=login" class="portal-card group" onclick="localStorage.setItem('selectedRole', 'teacher');">
-                <div class="portal-icon icon-faculty">
-                    <i class="fas fa-chalkboard-user"></i>
+            <a href="public/index.php?action=login" onclick="setRole('teacher')"
+                class="group flex items-center p-4 bg-white border border-gray-100 rounded-2xl hover:border-charcoal hover:shadow-[0_8px_20px_-6px_rgba(31,41,51,0.15)] transition-all duration-300 relative overflow-hidden">
+                <div
+                    class="flex-shrink-0 w-12 h-12 rounded-xl bg-gray-100 flex items-center justify-center text-charcoal group-hover:bg-charcoal group-hover:text-white transition-all duration-300 z-10">
+                    <i class="fas fa-chalkboard-user text-xl"></i>
                 </div>
-                <h4 class="font-semibold text-gray-900 mb-1">Faculty Portal</h4>
-                <p class="text-sm text-gray-600">Faculty management system</p>
+                <div class="ml-4 flex-1 z-10">
+                    <h4 class="font-heading font-bold text-charcoal text-lg">Faculty Portal</h4>
+                    <p class="text-sm text-gray-500">Faculty workflow system</p>
+                </div>
+                <i
+                    class="fas fa-chevron-right text-gray-300 group-hover:text-charcoal group-hover:translate-x-1 transition-all z-10"></i>
             </a>
 
             <!-- Admin Portal -->
-            <a href="public/index.php?action=login" class="portal-card group" onclick="localStorage.setItem('selectedRole', 'admin');">
-                <div class="portal-icon icon-admin">
-                    <i class="fas fa-users-cog"></i>
+            <a href="public/index.php?action=login" onclick="setRole('admin')"
+                class="group flex items-center p-4 bg-white border border-gray-100 rounded-2xl hover:border-emerald-500 hover:shadow-[0_8px_20px_-6px_rgba(16,185,129,0.15)] transition-all duration-300 relative overflow-hidden">
+                <div
+                    class="flex-shrink-0 w-12 h-12 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-500 group-hover:bg-emerald-500 group-hover:text-white transition-all duration-300 z-10">
+                    <i class="fas fa-users-cog text-xl"></i>
                 </div>
-                <h4 class="font-semibold text-gray-900 mb-1">Admin Portal</h4>
-                <p class="text-sm text-gray-600">Administrative dashboard</p>
-            </a>
-
-            <!-- Principal Portal -->
-            <a href="public/index.php?action=login" class="portal-card group" onclick="localStorage.setItem('selectedRole', 'principal');">
-                <div class="portal-icon icon-research">
-                    <i class="fas fa-user-tie"></i>
+                <div class="ml-4 flex-1 z-10">
+                    <h4 class="font-heading font-bold text-charcoal text-lg">Admin Portal</h4>
+                    <p class="text-sm text-gray-500">Administrative tools</p>
                 </div>
-                <h4 class="font-semibold text-gray-900 mb-1">Principal Portal</h4>
-                <p class="text-sm text-gray-600">Leadership dashboard</p>
-            </a>
-
-            <!-- HOD Portal -->
-            <a href="public/index.php?action=login" class="portal-card group" onclick="localStorage.setItem('selectedRole', 'hod');">
-                <div class="portal-icon icon-alumni">
-                    <i class="fas fa-sitemap"></i>
-                </div>
-                <h4 class="font-semibold text-gray-900 mb-1">HOD Portal</h4>
-                <p class="text-sm text-gray-600">Department management</p>
+                <i
+                    class="fas fa-chevron-right text-gray-300 group-hover:text-emerald-500 group-hover:translate-x-1 transition-all z-10"></i>
             </a>
 
             <!-- Parent Portal -->
-            <a href="public/index.php?action=login" class="portal-card group" onclick="localStorage.setItem('selectedRole', 'parent');">
-                <div class="portal-icon icon-parent">
-                    <i class="fas fa-heart"></i>
+            <a href="public/index.php?action=login" onclick="setRole('parent')"
+                class="group flex items-center p-4 bg-white border border-gray-100 rounded-2xl hover:border-charcoal hover:shadow-[0_8px_20px_-6px_rgba(31,41,51,0.15)] transition-all duration-300 relative overflow-hidden border-dashed">
+                <div
+                    class="flex-shrink-0 w-12 h-12 rounded-xl bg-gray-50 flex items-center justify-center text-gray-400 group-hover:bg-charcoal group-hover:text-white transition-all duration-300 z-10">
+                    <i class="fas fa-user-friends text-xl"></i>
                 </div>
-                <h4 class="font-semibold text-gray-900 mb-1">Parent Portal</h4>
-                <p class="text-sm text-gray-600">Track your ward's progress</p>
+                <div class="ml-4 flex-1 z-10">
+                    <h4
+                        class="font-heading font-bold text-gray-700 text-lg group-hover:text-charcoal transition-colors">
+                        Parent Portal</h4>
+                    <p class="text-sm text-gray-500">Track student progress</p>
+                </div>
+                <span
+                    class="text-[10px] font-bold uppercase tracking-wider bg-gray-100 text-gray-500 px-2 py-1 rounded">Soon</span>
             </a>
 
             <!-- Alumni Portal -->
-            <a href="public/index.php?action=login" class="portal-card group" onclick="localStorage.setItem('selectedRole', 'alumni');">
-                <div class="portal-icon icon-cloud">
-                    <i class="fas fa-network-wired"></i>
+            <a href="public/index.php?action=login" onclick="setRole('alumni')"
+                class="group flex items-center p-4 bg-white border border-gray-100 rounded-2xl hover:border-amber-400 hover:shadow-[0_8px_20px_-6px_rgba(245,158,11,0.15)] transition-all duration-300 relative overflow-hidden border-dashed">
+                <div
+                    class="flex-shrink-0 w-12 h-12 rounded-xl bg-gray-50 flex items-center justify-center text-gray-400 group-hover:bg-amber-500 group-hover:text-white transition-all duration-300 z-10">
+                    <i class="fas fa-network-wired text-xl"></i>
                 </div>
-                <h4 class="font-semibold text-gray-900 mb-1">Alumni Portal</h4>
-                <p class="text-sm text-gray-600">Connect, share, inspire</p>
+                <div class="ml-4 flex-1 z-10">
+                    <h4
+                        class="font-heading font-bold text-gray-700 text-lg group-hover:text-charcoal transition-colors">
+                        Alumni Portal</h4>
+                    <p class="text-sm text-gray-500">Connect & inspire</p>
+                </div>
+                <span
+                    class="text-[10px] font-bold uppercase tracking-wider bg-gray-100 text-gray-500 px-2 py-1 rounded">Soon</span>
             </a>
 
             <!-- Research Portal -->
-            <a href="public/index.php?action=login" class="portal-card group" onclick="localStorage.setItem('selectedRole', 'research');">
-                <div class="portal-icon icon-research">
-                    <i class="fas fa-flask-vial"></i>
+            <a href="public/index.php?action=login" onclick="setRole('research')"
+                class="group flex items-center p-4 bg-white border border-gray-100 rounded-2xl hover:border-emerald-500 hover:shadow-[0_8px_20px_-6px_rgba(16,185,129,0.15)] transition-all duration-300 relative overflow-hidden border-dashed">
+                <div
+                    class="flex-shrink-0 w-12 h-12 rounded-xl bg-gray-50 flex items-center justify-center text-gray-400 group-hover:bg-emerald-500 group-hover:text-white transition-all duration-300 z-10">
+                    <i class="fas fa-flask text-xl"></i>
                 </div>
-                <h4 class="font-semibold text-gray-900 mb-1">Research Portal</h4>
-                <p class="text-sm text-gray-600">Research portal access</p>
+                <div class="ml-4 flex-1 z-10">
+                    <h4
+                        class="font-heading font-bold text-gray-700 text-lg group-hover:text-charcoal transition-colors">
+                        Research Portal</h4>
+                    <p class="text-sm text-gray-500">Research & publications</p>
+                </div>
+                <span
+                    class="text-[10px] font-bold uppercase tracking-wider bg-gray-100 text-gray-500 px-2 py-1 rounded">Soon</span>
             </a>
 
             <!-- Private Cloud -->
-            <a href="public/index.php?action=login" class="portal-card group" onclick="localStorage.setItem('selectedRole', 'cloud');">
-                <div class="portal-icon icon-cloud">
-                    <i class="fas fa-cloud"></i>
+            <a href="public/index.php?action=login" onclick="setRole('cloud')"
+                class="group flex items-center p-4 bg-white border border-gray-100 rounded-2xl hover:border-charcoal hover:shadow-[0_8px_20px_-6px_rgba(31,41,51,0.15)] transition-all duration-300 relative overflow-hidden border-dashed mb-8">
+                <div
+                    class="flex-shrink-0 w-12 h-12 rounded-xl bg-gray-50 flex items-center justify-center text-gray-400 group-hover:bg-charcoal group-hover:text-white transition-all duration-300 z-10">
+                    <i class="fas fa-cloud text-xl"></i>
                 </div>
-                <h4 class="font-semibold text-gray-900 mb-1">Private Cloud</h4>
-                <p class="text-sm text-gray-600">Access to all databases and resources</p>
+                <div class="ml-4 flex-1 z-10">
+                    <h4
+                        class="font-heading font-bold text-gray-700 text-lg group-hover:text-charcoal transition-colors">
+                        Private Cloud</h4>
+                    <p class="text-sm text-gray-500">Access secure resources</p>
+                </div>
+                <span
+                    class="text-[10px] font-bold uppercase tracking-wider bg-gray-100 text-gray-500 px-2 py-1 rounded">Soon</span>
             </a>
+
         </div>
     </aside>
 
     <script>
-        // Get elements
-        const loginBtn = document.getElementById('loginBtn');
         const sidebar = document.getElementById('sidebar');
-        const overlay = document.getElementById('overlay');
-        const closeBtn = document.getElementById('closeBtn');
+        const overlay = document.getElementById('sidebarOverlay');
 
-        // Open sidebar
-        loginBtn.addEventListener('click', () => {
-            sidebar.classList.add('active');
-            overlay.classList.add('active');
-        });
-
-        // Close sidebar
-        closeBtn.addEventListener('click', closeSidebar);
-        overlay.addEventListener('click', closeSidebar);
-
-        function closeSidebar() {
-            sidebar.classList.remove('active');
-            overlay.classList.remove('active');
+        function openSidebar() {
+            sidebar.classList.remove('translate-x-full');
+            overlay.classList.remove('opacity-0', 'pointer-events-none');
+            overlay.classList.add('opacity-100', 'pointer-events-auto');
+            document.body.style.overflow = 'hidden';
         }
 
-        // Close sidebar when clicking on a portal link
-        document.querySelectorAll('.portal-card').forEach(card => {
-            card.addEventListener('click', () => {
-                closeSidebar();
-            });
+        function closeSidebar() {
+            sidebar.classList.add('translate-x-full');
+            overlay.classList.remove('opacity-100', 'pointer-events-auto');
+            overlay.classList.add('opacity-0', 'pointer-events-none');
+            document.body.style.overflow = '';
+        }
+
+        overlay.addEventListener('click', closeSidebar);
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeSidebar();
         });
 
-        // Handle Escape key
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                closeSidebar();
-            }
-        });
+        // Save selected role to pre-fill login page
+        function setRole(role) {
+            localStorage.setItem('selectedRole', role);
+        }
     </script>
 </body>
 

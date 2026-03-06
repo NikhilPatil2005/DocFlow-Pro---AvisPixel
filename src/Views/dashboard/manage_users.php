@@ -21,18 +21,23 @@ elseif ($currentUserRole === 'principal')
             <form action="index.php" method="GET" class="flex flex-col md:flex-row gap-4">
                 <input type="hidden" name="action" value="manage_users">
                 <div class="flex-1">
-                     <input type="text" name="search" value="<?php echo htmlspecialchars($search); ?>" placeholder="Search by name or email" class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-600">
+                    <input type="text" name="search" value="<?php echo htmlspecialchars($search); ?>"
+                        placeholder="Search by name or email"
+                        class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-600">
                 </div>
-                 <div>
-                    <select name="status" class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-600">
+                <div>
+                    <select name="status"
+                        class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-600">
                         <option value="">All Statuses</option>
                         <option value="active" <?php echo $status === 'active' ? 'selected' : ''; ?>>Active</option>
                         <option value="inactive" <?php echo $status === 'inactive' ? 'selected' : ''; ?>>Inactive</option>
-                        <option value="pending" <?php echo strpos($status, 'pending') !== false ? 'selected' : ''; ?>>Pending</option>
+                        <option value="pending" <?php echo strpos($status, 'pending') !== false ? 'selected' : ''; ?>>
+                            Pending</option>
                     </select>
                 </div>
                 <div>
-                     <button type="submit" class="px-6 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">Filter</button>
+                    <button type="submit"
+                        class="px-6 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">Filter</button>
                 </div>
             </form>
         </div>
@@ -41,63 +46,68 @@ elseif ($currentUserRole === 'principal')
             <div class="mt-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
                 <span class="block sm:inline"><?php echo htmlspecialchars($_GET['success']); ?></span>
             </div>
-        <?php
-endif; ?>
+            <?php
+        endif; ?>
         <?php if (isset($_GET['error'])): ?>
             <div class="mt-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
                 <span class="block sm:inline"><?php echo htmlspecialchars($_GET['error']); ?></span>
             </div>
-        <?php
-endif; ?>
+            <?php
+        endif; ?>
 
         <!-- Tabs -->
         <div class="mt-8">
             <ul class="flex border-b">
                 <?php if ($currentUserRole === 'admin' || $currentUserRole === 'principal'): ?>
-                <li class="-mb-px mr-1">
-                    <a class="bg-white inline-block border-l border-t border-r rounded-t py-2 px-4 text-blue-700 font-semibold" href="#hods" id="tab-hods" onclick="openTab(event, 'hods')">HODs</a>
-                </li>
+                    <li class="-mb-px mr-1">
+                        <a class="bg-white inline-block border-l border-t border-r rounded-t py-2 px-4 text-blue-700 font-semibold"
+                            href="#hods" id="tab-hods" onclick="openTab(event, 'hods')">HODs</a>
+                    </li>
                 <?php endif; ?>
-                
-                <?php if (in_array($currentUserRole, ['super_admin', 'admin', 'principal'])): ?>
-                <li class="mr-1">
-                    <a class="bg-white inline-block py-2 px-4 text-blue-500 hover:text-blue-800 font-semibold" href="#teachers" id="tab-teachers" onclick="openTab(event, 'teachers')">Teachers</a>
-                </li>
+
+                <?php if (in_array($currentUserRole, ['admin', 'principal'])): ?>
+                    <li class="mr-1">
+                        <a class="bg-white inline-block py-2 px-4 text-blue-500 hover:text-blue-800 font-semibold"
+                            href="#teachers" id="tab-teachers" onclick="openTab(event, 'teachers')">Teachers</a>
+                    </li>
                 <?php endif; ?>
 
                 <?php if ($currentUserRole !== 'teacher'): ?>
-                <li class="mr-1">
-                    <a class="bg-white inline-block py-2 px-4 text-blue-500 hover:text-blue-800 font-semibold" href="#students" id="tab-students" onclick="openTab(event, 'students')">Students</a>
-                </li>
+                    <li class="mr-1">
+                        <a class="bg-white inline-block py-2 px-4 text-blue-500 hover:text-blue-800 font-semibold"
+                            href="#students" id="tab-students" onclick="openTab(event, 'students')">Students</a>
+                    </li>
                 <?php endif; ?>
             </ul>
 
             <div class="bg-white p-4 rounded-b-lg shadow-md">
                 <?php
-$roleGroups = ['admin' => [], 'hod' => [], 'teacher' => [], 'student' => []];
-foreach ($users as $user) {
-    if (isset($roleGroups[$user['role']])) {
-        $roleGroups[$user['role']][] = $user;
-    }
-}
-?>
+                $roleGroups = ['admin' => [], 'hod' => [], 'teacher' => [], 'student' => []];
+                foreach ($users as $user) {
+                    if (isset($roleGroups[$user['role']])) {
+                        $roleGroups[$user['role']][] = $user;
+                    }
+                }
+                ?>
 
                 <!-- HOD Tab -->
                 <?php if ($currentUserRole === 'admin' || $currentUserRole === 'principal'): ?>
-                <div id="hods" class="tab-content block">
-                    <?php renderUserTable($roleGroups['hod'], $currentUserRole); ?>
-                </div>
+                    <div id="hods" class="tab-content block">
+                        <?php renderUserTable($roleGroups['hod'], $currentUserRole); ?>
+                    </div>
                 <?php endif; ?>
 
                 <!-- Teacher Tab -->
-                <?php if (in_array($currentUserRole, ['super_admin', 'admin', 'principal'])): ?>
-                <div id="teachers" class="tab-content <?php echo(in_array($currentUserRole, ['admin', 'principal'])) ? 'block' : 'hidden'; ?>">
-                    <?php renderUserTable($roleGroups['teacher'], $currentUserRole); ?>
-                </div>
+                <?php if (in_array($currentUserRole, ['admin', 'principal'])): ?>
+                    <div id="teachers"
+                        class="tab-content <?php echo (in_array($currentUserRole, ['admin', 'principal'])) ? 'block' : 'hidden'; ?>">
+                        <?php renderUserTable($roleGroups['teacher'], $currentUserRole); ?>
+                    </div>
                 <?php endif; ?>
 
                 <!-- Student Tab -->
-                <div id="students" class="tab-content <?php echo($currentUserRole === 'teacher') ? 'block' : 'hidden'; ?>">
+                <div id="students"
+                    class="tab-content <?php echo ($currentUserRole === 'teacher') ? 'block' : 'hidden'; ?>">
                     <?php renderUserTable($roleGroups['student'], $currentUserRole); ?>
                 </div>
             </div>
@@ -106,21 +116,21 @@ foreach ($users as $user) {
 </main>
 
 <script>
-function openTab(evt, tabName) {
-    var i, tabcontent, tablinks;
-    tabcontent = document.getElementsByClassName("tab-content");
-    for (i = 0; i < tabcontent.length; i++) {
-        tabcontent[i].classList.add("hidden");
-        tabcontent[i].classList.remove("block");
+    function openTab(evt, tabName) {
+        var i, tabcontent, tablinks;
+        tabcontent = document.getElementsByClassName("tab-content");
+        for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].classList.add("hidden");
+            tabcontent[i].classList.remove("block");
+        }
+        tablinks = document.getElementsByTagName("a");
+        // Reset basic tab styles if needed, but for now simple hidden/block toggle
+        // Improve active class logic
+        document.getElementById(tabName).classList.remove("hidden");
+        document.getElementById(tabName).classList.add("block");
+        evt.currentTarget.classList.add("border-l", "border-t", "border-r", "rounded-t", "text-blue-700");
+        // Remove active styles from others? (Simplified for brevity)
     }
-    tablinks = document.getElementsByTagName("a");
-    // Reset basic tab styles if needed, but for now simple hidden/block toggle
-    // Improve active class logic
-    document.getElementById(tabName).classList.remove("hidden");
-    document.getElementById(tabName).classList.add("block");
-    evt.currentTarget.classList.add("border-l", "border-t", "border-r", "rounded-t", "text-blue-700");
-    // Remove active styles from others? (Simplified for brevity)
-}
 </script>
 
 <?php
@@ -130,7 +140,7 @@ function renderUserTable($users, $viewerRole)
         echo '<p class="text-gray-500">No users found.</p>';
         return;
     }
-?>
+    ?>
     <div class="flex flex-col">
         <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
             <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
@@ -138,10 +148,18 @@ function renderUserTable($users, $viewerRole)
                     <table class="min-w-full divide-y divide-gray-200">
                         <thead class="bg-gray-50">
                             <tr>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name/Email</th>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Role</th>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Registered</th>
+                                <th scope="col"
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Name/Email</th>
+                                <th scope="col"
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Role</th>
+                                <th scope="col"
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Status</th>
+                                <th scope="col"
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Registered</th>
                                 <th scope="col" class="relative px-6 py-3">
                                     <span class="sr-only">Actions</span>
                                 </th>
@@ -153,8 +171,10 @@ function renderUserTable($users, $viewerRole)
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <div class="flex items-center">
                                             <div>
-                                                <div class="text-sm font-medium text-gray-900"><?php echo htmlspecialchars($user['username']); ?></div>
-                                                <div class="text-sm text-gray-500"><?php echo htmlspecialchars($user['email'] ?? 'No email'); ?></div>
+                                                <div class="text-sm font-medium text-gray-900">
+                                                    <?php echo htmlspecialchars($user['username']); ?></div>
+                                                <div class="text-sm text-gray-500">
+                                                    <?php echo htmlspecialchars($user['email'] ?? 'No email'); ?></div>
                                             </div>
                                         </div>
                                     </td>
@@ -162,16 +182,17 @@ function renderUserTable($users, $viewerRole)
                                         <div class="text-sm text-gray-900"><?php echo ucfirst($user['role']); ?></div>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
-                                         <?php
-        $statusColor = 'bg-gray-100 text-gray-800';
-        if ($user['status'] === 'active')
-            $statusColor = 'bg-green-100 text-green-800';
-        elseif ($user['status'] === 'rejected')
-            $statusColor = 'bg-red-100 text-red-800';
-        elseif (strpos($user['status'], 'pending') !== false)
-            $statusColor = 'bg-yellow-100 text-yellow-800';
-?>
-                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full <?php echo $statusColor; ?>">
+                                        <?php
+                                        $statusColor = 'bg-gray-100 text-gray-800';
+                                        if ($user['status'] === 'active')
+                                            $statusColor = 'bg-green-100 text-green-800';
+                                        elseif ($user['status'] === 'rejected')
+                                            $statusColor = 'bg-red-100 text-red-800';
+                                        elseif (strpos($user['status'], 'pending') !== false)
+                                            $statusColor = 'bg-yellow-100 text-yellow-800';
+                                        ?>
+                                        <span
+                                            class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full <?php echo $statusColor; ?>">
                                             <?php echo ucfirst(str_replace('_', ' ', $user['status'])); ?>
                                         </span>
                                     </td>
@@ -179,18 +200,19 @@ function renderUserTable($users, $viewerRole)
                                         <?php echo isset($user['created_at']) ? date('M d, Y', strtotime($user['created_at'])) : '-'; ?>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                        <a href="index.php?action=view_user&id=<?php echo $user['id']; ?>" class="text-indigo-600 hover:text-indigo-900">View</a>
+                                        <a href="index.php?action=view_user&id=<?php echo $user['id']; ?>"
+                                            class="text-indigo-600 hover:text-indigo-900">View</a>
                                     </td>
                                 </tr>
-                            <?php
-    endforeach; ?>
+                                <?php
+                            endforeach; ?>
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
     </div>
-<?php
+    <?php
 }
 ?>
 

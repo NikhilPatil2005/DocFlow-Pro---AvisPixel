@@ -107,7 +107,7 @@ class AuthController
                     $status = 'pending_principal';
                     break;
                 case 'principal':
-                    $status = 'pending_admin';
+                    $status = 'pending_principal';
                     break;
                 case 'admin':
                     $masterKey = $_POST['master_key'] ?? '';
