@@ -3,11 +3,13 @@
 A PHP-based web application for managing notices with a multi-role approval workflow.
 
 ## Features
--   **Multi-Role System**: Super Admin, Admin, Teacher, Student.
--   **Notice Workflow**: Creation -> Admin Approval -> Teacher Publishing -> Student Viewing.
--   **Rejection Handling**: Detailed feedback loops for rejected notices.
--   **Dashboard**: Role-specific dashboards with relevant actions.
--   **Notifications**: Real-time alerts for system events.
+-   **Multi-Role System**: Super Admin, Admin, Principal, HOD, Teacher, Student.
+-   **Notice Workflow**: Role-based creation, approval, rejection, and publishing pipelines.
+-   **Leave Management System**: Faculty can apply for OD (On Duty) leaves, routed through HOD and Principal for multi-level approval.
+-   **Salary Certificate Request**: Teachers can request salary certificates digitally; Principals examine and sign them resulting in an official printable document.
+-   **User Profile Management**: Built-in credential management allowing all roles to update personal details (Name, Email, Department) and securely change passwords.
+-   **Modern UI Redesign**: Engineered with a responsive dark-charcoal sliding sidebar, dropdown groups, smooth transitions, and a minimalistic grid-card layout using TailwindCSS.
+-   **Notifications & Dashboards**: Dashboard aggregators containing pending requests, badge counts, and notifications.
 
 ## Setup
 1.  Import `setup.sql` into your MySQL database.
@@ -33,9 +35,10 @@ The **Role Based Notice System** is a web application designed to manage the lif
 
 | Role | Access Level | Responsibilities |
 | :--- | :--- | :--- |
-| **Super Admin** | High | - Create new notices.<br>- Edit rejected notices.<br>- Resubmit notices for approval.<br>- View notice history. |
-| **Admin** | Medium | - Review notices created by Super Admin.<br>- Approve notices (moves to Teacher).<br>- Reject notices (returns to Super Admin). |
-| **Teacher** | Medium | - Review notices approved by Admin.<br>- Publish notices (visible to Students).<br>- Reject notices (returns to Admin/Super Admin). |
+| **Admin** | Highest | - Manage system users, supervise global notices.<br>- Register new accounts and handle legacy system mappings. |
+| **Principal** | High | - Final approval authority for Salary Certificates and Faculty Leaves.<br>- Oversight of all departmental activities. |
+| **HOD** | Medium-High| - First-level approval for Departmental Leaves.<br>- View Teacher and Student directories for their specific department. |
+| **Teacher** | Medium | - Apply for OD Leaves and Salary Certificates.<br>- Review/Publish notices to Students.<br>- View assigned Student directories. |
 | **Student** | Low | - View published notices.<br>- Mark notices as read (automatically tracked). |
 
 ### 3. Authentication Flow
@@ -123,11 +126,18 @@ The system maps users, notices, logs, and interaction data.
 ```mermaid
 erDiagram
     USERS ||--o{ NOTICES : "creates"
+    USERS ||--o{ LEAVES : "applies"
+    USERS ||--o{ SALARY_CERTIFICATES : "requests"
+    DEPARTMENTS ||--o{ USERS : "contains"
+    
     USERS {
         int id PK
         string username
+        string full_name
+        string email
         string password
         enum role
+        int department_id FK
     }
     
     NOTICES ||--o{ NOTICE_LOGS : "has history"
@@ -139,6 +149,21 @@ erDiagram
         enum status
         int created_by FK
         text rejection_reason
+    }
+
+    LEAVES {
+        int id PK
+        int user_id FK
+        date leave_date
+        enum status
+    }
+
+    SALARY_CERTIFICATES {
+        int id PK
+        int teacher_id FK
+        date from_date
+        date to_date
+        enum status
     }
 
     NOTICE_LOGS {
