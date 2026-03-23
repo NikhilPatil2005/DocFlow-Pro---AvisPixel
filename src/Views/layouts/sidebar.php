@@ -143,6 +143,38 @@ $pendingNoticesCount = $noticeModelForSidebar->getPendingCount($currentUserRole)
             </div>
         <?php endif; ?>
 
+        <?php if (in_array($currentUserRole, ['teacher', 'hod', 'student'])): ?>
+            <!-- Examination System Section -->
+            <div class="pt-4 pb-1">
+                <button onclick="toggleDropdown('exam-dropdown')"
+                    class="w-full flex items-center justify-between px-4 py-2 text-xs font-semibold text-[#9CA3AF] uppercase tracking-wider hover:text-white transition-colors focus:outline-none">
+                    <span class="flex items-center gap-2"><i class="fas fa-edit w-4"></i> Examinations</span>
+                    <i class="fas fa-chevron-down text-[10px] transform transition-transform duration-200"
+                        id="exam-dropdown-icon"></i>
+                </button>
+
+                <div id="exam-dropdown" class="mt-2 space-y-1 overflow-hidden transition-all duration-300 max-h-0">
+                    <?php if (in_array($currentUserRole, ['teacher', 'hod'])): ?>
+                        <a href="index.php?action=teacher_exams"
+                            class="flex items-center px-4 py-2.5 pl-11 rounded-lg text-[#E5E7EB] hover:bg-[#374151] transition-colors <?php echo ($_GET['action'] ?? '') == 'teacher_exams' ? 'bg-[#374151] border-l-4 border-[#10B981]' : 'border-l-4 border-transparent'; ?>">
+                            <span class="text-sm">Manage Exams</span>
+                        </a>
+                        <a href="index.php?action=create_exam"
+                            class="flex items-center px-4 py-2.5 pl-11 rounded-lg text-[#E5E7EB] hover:bg-[#374151] transition-colors <?php echo ($_GET['action'] ?? '') == 'create_exam' ? 'bg-[#374151] border-l-4 border-[#10B981]' : 'border-l-4 border-transparent'; ?>">
+                            <span class="text-sm">Create Exam</span>
+                        </a>
+                    <?php endif; ?>
+
+                    <?php if ($currentUserRole === 'student'): ?>
+                        <a href="index.php?action=student_exams"
+                            class="flex items-center justify-between px-4 py-2.5 pl-11 rounded-lg text-[#E5E7EB] hover:bg-[#374151] transition-colors <?php echo ($_GET['action'] ?? '') == 'student_exams' ? 'bg-[#374151] border-l-4 border-[#10B981]' : 'border-l-4 border-transparent'; ?>">
+                            <span class="text-sm">My Exams</span>
+                        </a>
+                    <?php endif; ?>
+                </div>
+            </div>
+        <?php endif; ?>
+
         <!-- Settings Section -->
         <div class="pt-4 pb-1">
             <button onclick="toggleDropdown('settings-dropdown')"

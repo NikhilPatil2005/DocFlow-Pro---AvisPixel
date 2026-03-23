@@ -12,26 +12,28 @@
         <ul class="divide-y divide-gray-200">
             <?php
             require_once __DIR__ . '/../../Models/Notification.php';
-            $notifModel = new Notification($conn);
-            $notifications = $notifModel->getUnread(currentUser());
+            $userId = currentUser();
+            $notifications = $conn->query("SELECT * FROM notifications WHERE user_id = $userId ORDER BY created_at DESC")->fetch_all(MYSQLI_ASSOC);
 
             if (empty($notifications)): ?>
                 <li class="px-4 py-4 sm:px-6 text-gray-500">No new notifications.</li>
             <?php else:
                 foreach ($notifications as $notif):
                     ?>
-                    <li class="bg-blue-50">
+                    <li class="<?php echo $notif['is_read'] ? 'bg-white' : 'bg-blue-50'; ?> hover:bg-gray-50 transition">
                         <div class="px-4 py-4 sm:px-6">
                             <div class="flex items-center justify-between">
                                 <p class="text-sm font-medium text-gray-900 truncate">
                                     <?php echo htmlspecialchars($notif['message']); ?>
                                 </p>
+                                <?php if (!$notif['is_read']): ?>
                                 <div class="ml-2 flex-shrink-0 flex">
                                     <span
                                         class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
                                         New
                                     </span>
                                 </div>
+                                <?php endif; ?>
                             </div>
                             <div class="mt-2 sm:flex sm:justify-between">
                                 <div class="sm:flex">

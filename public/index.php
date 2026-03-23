@@ -11,6 +11,7 @@ require_once __DIR__ . '/../src/Controllers/UserController.php';
 require_once __DIR__ . '/../src/Controllers/LeaveController.php';
 require_once __DIR__ . '/../src/Controllers/SalaryCertificateController.php';
 require_once __DIR__ . '/../src/Controllers/ProfileController.php';
+require_once __DIR__ . '/../src/Controllers/ExamController.php';
 
 $action = $_GET['action'] ?? 'login';
 
@@ -22,6 +23,7 @@ $userController = new UserController($conn);
 $leaveController = new LeaveController($conn);
 $salaryController = new SalaryCertificateController($conn);
 $profileController = new ProfileController($conn);
+$examController = new ExamController($conn);
 
 switch ($action) {
     case 'login':
@@ -150,6 +152,46 @@ switch ($action) {
         break;
     case 'update_password':
         $profileController->updatePassword();
+        break;
+
+    // Examinations (Teacher)
+    case 'teacher_exams':
+        $examController->teacherIndex();
+        break;
+    case 'create_exam':
+        $examController->create();
+        break;
+    case 'store_exam':
+        $examController->store();
+        break;
+    case 'manage_exam_questions':
+        $examController->manageQuestions();
+        break;
+    case 'store_exam_question':
+        $examController->storeQuestion();
+        break;
+    case 'publish_exam':
+        $examController->publish();
+        break;
+    case 'teacher_exam_results':
+        $examController->teacherResults();
+        break;
+
+    // Examinations (Student)
+    case 'student_exams':
+        $examController->studentIndex();
+        break;
+    case 'attempt_exam':
+        $examController->attempt();
+        break;
+    case 'save_exam_answer':
+        $examController->saveAnswer();
+        break;
+    case 'submit_exam_attempt':
+        $examController->submitAttempt();
+        break;
+    case 'student_exam_result':
+        $examController->studentResult();
         break;
 
     // Dedicated Pages

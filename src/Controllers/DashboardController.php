@@ -132,13 +132,63 @@ class DashboardController
     {
         requireLogin();
         requireRole(['teacher']);
-        view('dashboard/teacher');
+        
+        require_once __DIR__ . '/../Models/Exam.php';
+        global $conn;
+        $examModel = new Exam($conn);
+        $exams = $examModel->getExamsByTeacher($_SESSION['user_id']);
+        
+        $activeExams = 0;
+        $completedExams = 0;
+        $totalExams = count($exams);
+        foreach ($exams as $e) {
+            if ($e['status'] === 'published') $activeExams++;
+            if ($e['status'] === 'completed') $completedExams++;
+        }
+        
+        $analytics = $examModel->getTeacherExamAnalytics($_SESSION['user_id']);
+        
+        view('dashboard/teacher', [
+            'totalExams' => $totalExams,
+            'activeExams' => $activeExams,
+            'completedExams' => $completedExams,
+            'exams' => array_slice($exams, 0, 5), // Recent 5 exams
+            'analytics' => $analytics
+        ]);
     }
 
     public function student()
     {
         requireLogin();
         requireRole(['student']);
-        view('dashboard/student');
+        
+        require_once __DIR__ . '/../Models/Exam.php';
+        require_once __DIR__ . '/../Models/User.php';
+        global $conn;
+        
+        $examModel = new Exam($conn);
+        $userModel = new User($conn);
+        $user = $userModel->getUserById($_SESSION['user_id']);
+        
+        $upcomingExams = $examModel->getAvailableExamsForStudent($user['department_id']);
+        
+        $statsQuery = "SELECT COUNT(id) as taken, SUM(score) as sum_score, SUM(total_marks) as sum_total FROM exam_attempts WHERE user_id = ? AND is_submitted = 1";
+        $stmt = $conn->prepare($statsQuery);
+        $stmt->bind_param("i", $_SESSION['user_id']);
+        $stmt->execute();
+        $stats = $stmt->get_result()->fetch_assoc();
+        
+        $avgScore = '--';
+        $examsTaken = $stats['taken'] > 0 ? (int)$stats['taken'] : '--';
+        
+        if ($stats['taken'] > 0 && $stats['sum_total'] > 0) {
+            $avgScore = round(($stats['sum_score'] / $stats['sum_total']) * 100, 1) . '%';
+        }
+        
+        view('dashboard/student', [
+            'upcomingExams' => $upcomingExams,
+            'avgScore' => $avgScore,
+            'examsTaken' => $examsTaken
+        ]);
     }
 }

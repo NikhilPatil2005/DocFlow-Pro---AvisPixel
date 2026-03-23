@@ -18,4 +18,7 @@ if ($conn->connect_error) {
 
 // Set Charset
 $conn->set_charset("utf8mb4");
+
+// Set Indian Timezone globally
+date_default_timezone_set('Asia/Kolkata');
 ?>
